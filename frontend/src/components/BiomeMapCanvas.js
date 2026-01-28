@@ -1,62 +1,62 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-// 5 Biomas brasileiros com cores da bandeira do Brasil
+// 5 Biomas brasileiros - Disposição em pirâmide
 const BIOMES = [
   { 
     name: 'Cultura', 
     color: '#009B3A',
     accentColor: '#00C853',
-    position: { x: 0.2, y: 0.3 },
+    position: { x: 0.3, y: 0.75 }, // Base esquerda
     regionRadius: 0.18,
     movementPattern: 'spiral',
     movementSpeed: 0.0008,
     chaos: 0.3,
-    weight: 1.0 // Densidade normal
+    weight: 1.0
   },
   { 
     name: 'Negócios', 
     color: '#0066CC',
     accentColor: '#3399FF',
-    position: { x: 0.8, y: 0.3 },
+    position: { x: 0.35, y: 0.45 }, // Meio esquerda
     regionRadius: 0.18,
     movementPattern: 'flow',
     movementSpeed: 0.0015,
     chaos: 0.7,
-    weight: 1.4 // Mais partículas
+    weight: 1.4
   },
   { 
     name: 'Colaboração', 
     color: '#FFDF00',
     accentColor: '#FFE44D',
-    position: { x: 0.25, y: 0.7 },
+    position: { x: 0.7, y: 0.75 }, // Base direita
     regionRadius: 0.18,
     movementPattern: 'orbital',
     movementSpeed: 0.001,
     chaos: 0.4,
-    weight: 0.6 // Menos partículas
+    weight: 0.6
   },
   { 
     name: 'Reconhecimento', 
     color: '#FFFFFF',
     accentColor: '#E8E8E8',
-    position: { x: 0.75, y: 0.7 },
+    position: { x: 0.5, y: 0.25 }, // Topo centro
     regionRadius: 0.18,
     movementPattern: 'pulse',
     movementSpeed: 0.0012,
     chaos: 0.5,
-    weight: 1.4 // Mais partículas
+    weight: 1.4
   },
   { 
     name: 'Ser Humano', 
     color: '#00A859',
     accentColor: '#00D966',
-    position: { x: 0.5, y: 0.5 },
+    position: { x: 0.65, y: 0.45 }, // Meio direita
     regionRadius: 0.16,
     movementPattern: 'wave',
     movementSpeed: 0.001,
     chaos: 0.6,
-    weight: 1.0 // Densidade normal
+    weight: 1.0
   }
 ];
 
@@ -320,34 +320,6 @@ export default function BiomeMapCanvas() {
           </div>
         ))}
       </div>
-      
-      {/* Title - Melhorado (mantido) */}
-      <motion.div
-        className="absolute top-12 left-0 right-0 text-center pointer-events-none w-full px-6"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.5 }}
-      >
-        <a 
-          href="https://ai.eco.br" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="pointer-events-auto inline-block"
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 hover:opacity-80 transition-opacity duration-300"
-              style={{
-                textShadow: '0 0 60px rgba(0, 155, 58, 0.8), 0 0 30px rgba(0, 155, 58, 0.6), 0 4px 20px rgba(0, 0, 0, 0.8)'
-              }}>
-            Sandbox - Ecossistema
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-green-300/90 font-medium"
-             style={{
-               textShadow: '0 0 20px rgba(0, 200, 100, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5)'
-             }}>
-            Invite Only - Apenas por Convite
-          </p>
-        </a>
-      </motion.div>
       
       {/* Breathing gradient overlay */}
       <motion.div
