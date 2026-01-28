@@ -326,7 +326,7 @@ export default function BiomeMapCanvas() {
       
       {/* Title */}
       <motion.div
-        className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-none w-full px-6"
+        className="absolute top-12 left-0 right-0 text-center pointer-events-none w-full px-6"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
@@ -337,45 +337,13 @@ export default function BiomeMapCanvas() {
           rel="noopener noreferrer"
           className="pointer-events-auto inline-block"
         >
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 hover:opacity-80 transition-opacity duration-300"
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 hover:opacity-80 transition-opacity duration-300"
               style={{
                 textShadow: '0 0 40px rgba(0, 155, 58, 0.5)'
               }}>
             Sandbox - Ecossistema
           </h1>
-          <p className="text-lg sm:text-xl text-green-300/80 font-medium">Invite Only - Apenas por Convite</p>
-        </a>
-      </motion.div>
-      
-      {/* CTA */}
-      <motion.div
-        className="absolute bottom-12 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 1 }}
-      >
-        <a 
-          href="https://ai.eco.br" 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          <button 
-            className="px-8 py-4 rounded-full font-medium text-lg transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, #009B3A 0%, #00A859 100%)',
-              boxShadow: '0 0 30px rgba(0, 155, 58, 0.4)',
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.boxShadow = '0 0 50px rgba(0, 155, 58, 0.6)';
-              e.target.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.boxShadow = '0 0 30px rgba(0, 155, 58, 0.4)';
-              e.target.style.transform = 'scale(1)';
-            }}
-          >
-            Explorar Biomas
-          </button>
+          <p className="text-base sm:text-lg md:text-xl text-green-300/80 font-medium">Invite Only - Apenas por Convite</p>
         </a>
       </motion.div>
       
