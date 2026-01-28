@@ -1,42 +1,26 @@
 [
   {
-    "content": "Phase 1: Research best practices for react-three-fiber particle systems",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: Install required dependencies (three, @react-three/fiber, @react-three/drei)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: Create BiomeMap POC component with 5 attractors and particle system",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: Implement cursor parallax and hover pulse for Ética biome",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: Test POC performance and interactions on preview URL",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: Fix any issues until POC works smoothly",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: Switch to Canvas 2D approach due to R3F environment issues",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 1: All user stories covered and validated",
-    "status": "completed"
-  },
-  {
     "content": "Phase 2: Call design_agent for design guidelines",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Install canvas-confetti library",
+    "status": "in_progress"
+  },
+  {
+    "content": "Phase 2: Create Meta Humano Dashboard component",
     "status": "pending"
   },
   {
-    "content": "Phase 2: Implement full landing page with all 4 sections",
+    "content": "Phase 2: Create Acontecendo Agora component",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Create Sistema de Medalhas component",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Integrate all sections into App.js",
     "status": "pending"
   },
   {
