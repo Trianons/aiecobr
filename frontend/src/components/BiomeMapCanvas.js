@@ -130,7 +130,7 @@ export default function BiomeMapCanvas() {
 
     const animate = (currentTime) => {
       const time = (currentTime - startTime) / 1000;
-      const deltaTime = Math.min((currentTime - lastFrameTime) / 16.67, 2); // Cap delta time
+      const deltaTime = Math.min((currentTime - lastFrameTime) / 16.67, 2);
       lastFrameTime = currentTime;
 
       // FPS counter
@@ -141,7 +141,11 @@ export default function BiomeMapCanvas() {
         fpsRef.current.lastTime = currentTime;
       }
 
-      // Background com gradiente mais rico
+      // Clear canvas completamente para nova frame
+      ctx.fillStyle = '#020617';
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      // Background com gradiente mais rico (mas não muito escuro)
       const gradient = ctx.createRadialGradient(
         window.innerWidth / 2, 
         window.innerHeight / 2, 
@@ -150,13 +154,13 @@ export default function BiomeMapCanvas() {
         window.innerHeight / 2, 
         Math.max(window.innerWidth, window.innerHeight) / 2
       );
-      gradient.addColorStop(0, 'rgba(2, 6, 23, 0.95)');
-      gradient.addColorStop(0.5, 'rgba(1, 4, 15, 0.98)');
-      gradient.addColorStop(1, 'rgba(0, 2, 10, 1)');
+      gradient.addColorStop(0, 'rgba(2, 6, 23, 0.3)');
+      gradient.addColorStop(0.5, 'rgba(1, 4, 15, 0.2)');
+      gradient.addColorStop(1, 'rgba(0, 2, 10, 0.1)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      // Desenhar nebulosas de fundo (camada de profundidade)
+      // Desenhar nebulosas de fundo (camada de profundidade) - mais suaves
       BIOMES.forEach((biome, index) => {
         const nebulaGradient = ctx.createRadialGradient(
           biome.position.x * window.innerWidth,
@@ -167,8 +171,8 @@ export default function BiomeMapCanvas() {
           200 + Math.sin(time + index) * 50
         );
         const color = hexToRgb(biome.color);
-        nebulaGradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.15)`);
-        nebulaGradient.addColorStop(0.5, `rgba(${color.r}, ${color.g}, ${color.b}, 0.05)`);
+        nebulaGradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.08)`);
+        nebulaGradient.addColorStop(0.5, `rgba(${color.r}, ${color.g}, ${color.b}, 0.03)`);
         nebulaGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = nebulaGradient;
         ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
@@ -314,26 +318,32 @@ export default function BiomeMapCanvas() {
         }
         
         // Desenhar partícula principal com glow melhorado
-        const alpha = 0.8 * lifeFactor;
+        const alpha = 0.9 * lifeFactor;
         
-        // Glow externo
+        // Glow externo (mais visível)
         const glowGradient = ctx.createRadialGradient(
           screenX, screenY, 0,
-          screenX, screenY, particle.size * 3
+          screenX, screenY, particle.size * 4
         );
-        glowGradient.addColorStop(0, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha})`);
-        glowGradient.addColorStop(0.5, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha * 0.3})`);
+        glowGradient.addColorStop(0, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha * 0.8})`);
+        glowGradient.addColorStop(0.4, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha * 0.4})`);
         glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
         
         ctx.fillStyle = glowGradient;
         ctx.beginPath();
-        ctx.arc(screenX, screenY, particle.size * 3, 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, particle.size * 4, 0, Math.PI * 2);
         ctx.fill();
         
-        // Core da partícula (mais brilhante)
-        ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${Math.min(alpha * 1.5, 1)})`;
+        // Core da partícula (muito brilhante e visível)
+        ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 1)`;
         ctx.beginPath();
         ctx.arc(screenX, screenY, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Highlight no centro para mais brilho
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, particle.size * 0.5, 0, Math.PI * 2);
         ctx.fill();
       });
 
