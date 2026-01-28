@@ -9,15 +9,15 @@
   },
   {
     "content": "Phase 1: Create BiomeMap POC component with 5 attractors and particle system",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 1: Implement cursor parallax and hover pulse for Ética biome",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 1: Test POC performance and interactions on preview URL",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 1: Fix any issues until POC works smoothly",
