@@ -5,19 +5,19 @@
   },
   {
     "content": "Phase 2: Install canvas-confetti library",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 2: Create Meta Humano Dashboard component",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 2: Create Acontecendo Agora component",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 2: Create Sistema de Medalhas component",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 2: Integrate all sections into App.js",
