@@ -5,62 +5,57 @@ import { motion } from 'framer-motion';
 const BIOMES = [
   { 
     name: 'Ética', 
-    color: '#009B3A', // Verde bandeira
+    color: '#009B3A',
     accentColor: '#00C853',
     position: { x: 0.2, y: 0.3 },
     regionRadius: 0.18,
-    // Caatinga - Movimento em espiral, resiliente e persistente
     movementPattern: 'spiral',
     movementSpeed: 0.0008,
     chaos: 0.3
   },
   { 
     name: 'Inovação', 
-    color: '#0066CC', // Azul bandeira (mais claro para visibilidade)
+    color: '#0066CC',
     accentColor: '#3399FF',
     position: { x: 0.8, y: 0.3 },
     regionRadius: 0.18,
-    // Amazônia - Movimento fluido como rios, rápido e caótico
     movementPattern: 'flow',
     movementSpeed: 0.0015,
     chaos: 0.7
   },
   { 
     name: 'Colaboração', 
-    color: '#FFDF00', // Amarelo bandeira
+    color: '#FFDF00',
     accentColor: '#FFE44D',
     position: { x: 0.25, y: 0.7 },
     regionRadius: 0.18,
-    // Mata Atlântica - Movimento orbital, interconectado
     movementPattern: 'orbital',
     movementSpeed: 0.001,
     chaos: 0.4
   },
   { 
     name: 'Sustentabilidade', 
-    color: '#FFFFFF', // Branco bandeira
-    accentColor: '#F0F0F0',
+    color: '#FFFFFF',
+    accentColor: '#E8E8E8',
     position: { x: 0.75, y: 0.7 },
     regionRadius: 0.18,
-    // Cerrado - Movimento pulsante, ciclos e ritmos
     movementPattern: 'pulse',
     movementSpeed: 0.0012,
     chaos: 0.5
   },
   { 
     name: 'Humanidade', 
-    color: '#00A859', // Verde claro (variação do verde bandeira)
+    color: '#00A859',
     accentColor: '#00D966',
     position: { x: 0.5, y: 0.5 },
     regionRadius: 0.16,
-    // Pantanal - Movimento ondulatório, fluido e adaptável
     movementPattern: 'wave',
     movementSpeed: 0.001,
     chaos: 0.6
   }
 ];
 
-const PARTICLE_COUNT = 4000; // Mais partículas para melhor sobreposição
+const PARTICLE_COUNT = 6000; // Aumentado para mais impacto visual
 
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -86,23 +81,32 @@ export default function BiomeMapCanvas() {
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const animationRef = useRef(null);
+  const fpsRef = useRef({ lastTime: 0, frames: 0, fps: 60 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { 
+      alpha: false,
+      desynchronized: true // Performance boost
+    });
+    
     const setCanvasSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio, 2); // Limitar para performance
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
     };
     setCanvasSize();
     window.addEventListener('resize', setCanvasSize);
 
-    // Initialize particles - distribuídas para permitir sobreposição
+    // Inicializar partículas com trails
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => {
       const biome = BIOMES[Math.floor(Math.random() * BIOMES.length)];
-      const offsetX = (Math.random() - 0.5) * 0.35; // Maior dispersão
+      const offsetX = (Math.random() - 0.5) * 0.35;
       const offsetY = (Math.random() - 0.5) * 0.35;
       
       return {
@@ -111,23 +115,67 @@ export default function BiomeMapCanvas() {
         vx: (Math.random() - 0.5) * 0.001,
         vy: (Math.random() - 0.5) * 0.001,
         primaryBiome: biome,
-        angle: Math.random() * Math.PI * 2, // Para movimentos circulares
-        phaseOffset: Math.random() * Math.PI * 2, // Para variação
-        size: Math.random() * 2.5 + 0.8,
+        angle: Math.random() * Math.PI * 2,
+        phaseOffset: Math.random() * Math.PI * 2,
+        size: Math.random() * 3 + 1,
         currentColor: hexToRgb(biome.color),
-        transitionInfluence: 0.3 // Permite influência de biomas vizinhos
+        transitionInfluence: 0.3,
+        life: Math.random(), // Para variação de brilho
+        trail: [] // Array para rastro
       };
     });
 
     let startTime = Date.now();
+    let lastFrameTime = startTime;
 
-    const animate = () => {
-      const time = (Date.now() - startTime) / 1000;
-      ctx.fillStyle = 'rgba(2, 6, 23, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const animate = (currentTime) => {
+      const time = (currentTime - startTime) / 1000;
+      const deltaTime = Math.min((currentTime - lastFrameTime) / 16.67, 2); // Cap delta time
+      lastFrameTime = currentTime;
+
+      // FPS counter
+      fpsRef.current.frames++;
+      if (currentTime - fpsRef.current.lastTime >= 1000) {
+        fpsRef.current.fps = fpsRef.current.frames;
+        fpsRef.current.frames = 0;
+        fpsRef.current.lastTime = currentTime;
+      }
+
+      // Background com gradiente mais rico
+      const gradient = ctx.createRadialGradient(
+        window.innerWidth / 2, 
+        window.innerHeight / 2, 
+        0,
+        window.innerWidth / 2, 
+        window.innerHeight / 2, 
+        Math.max(window.innerWidth, window.innerHeight) / 2
+      );
+      gradient.addColorStop(0, 'rgba(2, 6, 23, 0.95)');
+      gradient.addColorStop(0.5, 'rgba(1, 4, 15, 0.98)');
+      gradient.addColorStop(1, 'rgba(0, 2, 10, 1)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      // Desenhar nebulosas de fundo (camada de profundidade)
+      BIOMES.forEach((biome, index) => {
+        const nebulaGradient = ctx.createRadialGradient(
+          biome.position.x * window.innerWidth,
+          biome.position.y * window.innerHeight,
+          0,
+          biome.position.x * window.innerWidth,
+          biome.position.y * window.innerHeight,
+          200 + Math.sin(time + index) * 50
+        );
+        const color = hexToRgb(biome.color);
+        nebulaGradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.15)`);
+        nebulaGradient.addColorStop(0.5, `rgba(${color.r}, ${color.g}, ${color.b}, 0.05)`);
+        nebulaGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = nebulaGradient;
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+      });
 
       particlesRef.current.forEach((particle, i) => {
-        // Encontrar biomas influentes (primário e secundários para sobreposição)
+        // Calcular influências dos biomas
         const influences = BIOMES.map(biome => {
           const dx = particle.x - biome.position.x;
           const dy = particle.y - biome.position.y;
@@ -138,77 +186,71 @@ export default function BiomeMapCanvas() {
         const primaryBiome = influences[0].biome;
         const secondaryBiome = influences[1].biome;
         
-        // Aplicar padrão de movimento único do bioma primário
+        // Aplicar padrões de movimento únicos (otimizados)
         switch(primaryBiome.movementPattern) {
           case 'spiral':
-            // Caatinga - Espiral para dentro/fora
-            particle.angle += primaryBiome.movementSpeed * 2;
+            particle.angle += primaryBiome.movementSpeed * 2 * deltaTime;
             const spiralRadius = 0.15 + Math.sin(time * 0.5 + particle.phaseOffset) * 0.05;
             const spiralX = primaryBiome.position.x + Math.cos(particle.angle) * spiralRadius;
             const spiralY = primaryBiome.position.y + Math.sin(particle.angle) * spiralRadius;
-            particle.vx += (spiralX - particle.x) * 0.0002;
-            particle.vy += (spiralY - particle.y) * 0.0002;
+            particle.vx += (spiralX - particle.x) * 0.0002 * deltaTime;
+            particle.vy += (spiralY - particle.y) * 0.0002 * deltaTime;
             break;
             
           case 'flow':
-            // Amazônia - Fluxo rápido e caótico como rios
             const flowDx = influences[0].dx;
             const flowDy = influences[0].dy;
             const flowDist = influences[0].dist;
-            particle.vx += (-flowDx / flowDist) * 0.00015 * (1 + Math.sin(time * 3 + i) * 0.5);
-            particle.vy += (-flowDy / flowDist) * 0.00015 * (1 + Math.cos(time * 3 + i) * 0.5);
-            // Turbulência extra
-            particle.vx += Math.sin(time * 2 + i * 0.5) * 0.0003;
-            particle.vy += Math.cos(time * 2.5 + i * 0.5) * 0.0003;
+            particle.vx += (-flowDx / flowDist) * 0.00015 * (1 + Math.sin(time * 3 + i) * 0.5) * deltaTime;
+            particle.vy += (-flowDy / flowDist) * 0.00015 * (1 + Math.cos(time * 3 + i) * 0.5) * deltaTime;
+            particle.vx += Math.sin(time * 2 + i * 0.5) * 0.0003 * deltaTime;
+            particle.vy += Math.cos(time * 2.5 + i * 0.5) * 0.0003 * deltaTime;
             break;
             
           case 'orbital':
-            // Mata Atlântica - Órbitas interconectadas
-            particle.angle += primaryBiome.movementSpeed;
+            particle.angle += primaryBiome.movementSpeed * deltaTime;
             const orbitX = primaryBiome.position.x + Math.cos(particle.angle + time) * 0.12;
             const orbitY = primaryBiome.position.y + Math.sin(particle.angle + time * 0.8) * 0.12;
-            particle.vx += (orbitX - particle.x) * 0.00025;
-            particle.vy += (orbitY - particle.y) * 0.00025;
+            particle.vx += (orbitX - particle.x) * 0.00025 * deltaTime;
+            particle.vy += (orbitY - particle.y) * 0.00025 * deltaTime;
             break;
             
           case 'pulse':
-            // Cerrado - Pulsação rítmica
             const pulseFactor = Math.sin(time * 1.5 + particle.phaseOffset) * 0.5 + 0.5;
             const pulseDx = influences[0].dx;
             const pulseDy = influences[0].dy;
             const pulseDist = influences[0].dist;
             const pulseForce = 0.0001 * (0.5 + pulseFactor);
-            particle.vx += (-pulseDx / pulseDist) * pulseForce;
-            particle.vy += (-pulseDy / pulseDist) * pulseForce;
+            particle.vx += (-pulseDx / pulseDist) * pulseForce * deltaTime;
+            particle.vy += (-pulseDy / pulseDist) * pulseForce * deltaTime;
             break;
             
           case 'wave':
-            // Pantanal - Ondas fluidas e adaptáveis
-            const waveX = Math.sin(time * 1.2 + particle.y * 5 + particle.phaseOffset) * 0.0002;
-            const waveY = Math.cos(time * 1.2 + particle.x * 5 + particle.phaseOffset) * 0.0002;
+            const waveX = Math.sin(time * 1.2 + particle.y * 5 + particle.phaseOffset) * 0.0002 * deltaTime;
+            const waveY = Math.cos(time * 1.2 + particle.x * 5 + particle.phaseOffset) * 0.0002 * deltaTime;
             particle.vx += waveX;
             particle.vy += waveY;
             const waveDx = influences[0].dx;
             const waveDy = influences[0].dy;
             const waveDist = influences[0].dist;
-            particle.vx += (-waveDx / waveDist) * 0.00008;
-            particle.vy += (-waveDy / waveDist) * 0.00008;
+            particle.vx += (-waveDx / waveDist) * 0.00008 * deltaTime;
+            particle.vy += (-waveDy / waveDist) * 0.00008 * deltaTime;
             break;
         }
         
-        // Adicionar influência do bioma secundário (sobreposição)
+        // Influência do bioma secundário
         if (secondaryBiome && influences[1].dist < 0.25) {
           const secondaryInfluence = (0.25 - influences[1].dist) / 0.25 * particle.transitionInfluence;
-          particle.vx += (-influences[1].dx / influences[1].dist) * 0.00005 * secondaryInfluence;
-          particle.vy += (-influences[1].dy / influences[1].dist) * 0.00005 * secondaryInfluence;
+          particle.vx += (-influences[1].dx / influences[1].dist) * 0.00005 * secondaryInfluence * deltaTime;
+          particle.vy += (-influences[1].dy / influences[1].dist) * 0.00005 * secondaryInfluence * deltaTime;
         }
         
-        // Caos e aleatoriedade por bioma
+        // Caos
         const chaosLevel = primaryBiome.chaos;
-        particle.vx += (Math.random() - 0.5) * 0.0001 * chaosLevel;
-        particle.vy += (Math.random() - 0.5) * 0.0001 * chaosLevel;
+        particle.vx += (Math.random() - 0.5) * 0.0001 * chaosLevel * deltaTime;
+        particle.vy += (Math.random() - 0.5) * 0.0001 * chaosLevel * deltaTime;
         
-        // Damping suave
+        // Damping
         particle.vx *= 0.98;
         particle.vy *= 0.98;
         
@@ -216,15 +258,14 @@ export default function BiomeMapCanvas() {
         particle.x += particle.vx;
         particle.y += particle.vy;
         
-        // Mouse parallax effect (subtle)
+        // Parallax
         const parallaxStrength = 0.015;
         const px = (mouseRef.current.x - 0.5) * parallaxStrength;
         const py = (mouseRef.current.y - 0.5) * parallaxStrength;
         
-        // Mistura de cores entre biomas (sobreposição visual)
+        // Mistura de cores
         let targetColor = hexToRgb(primaryBiome.color);
         
-        // Se próximo de outro bioma, misturar cores
         if (secondaryBiome && influences[1].dist < 0.2) {
           const mixFactor = (0.2 - influences[1].dist) / 0.2 * 0.4;
           const secondaryColor = hexToRgb(secondaryBiome.color);
@@ -235,35 +276,71 @@ export default function BiomeMapCanvas() {
           };
         }
         
-        // Smooth color transition
+        // Transição de cor suave
         particle.currentColor.r += (targetColor.r - particle.currentColor.r) * 0.08;
         particle.currentColor.g += (targetColor.g - particle.currentColor.g) * 0.08;
         particle.currentColor.b += (targetColor.b - particle.currentColor.b) * 0.08;
         
-        // Draw particle
-        const screenX = (particle.x + px) * canvas.width;
-        const screenY = (particle.y + py) * canvas.height;
+        // Variação de vida para pulsação
+        particle.life += 0.02 * deltaTime;
+        const lifeFactor = (Math.sin(particle.life) * 0.3 + 0.7);
         
-        ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 0.6)`;
+        // Posição na tela
+        const screenX = (particle.x + px) * window.innerWidth;
+        const screenY = (particle.y + py) * window.innerHeight;
+        
+        // Culling - não desenhar partículas fora da tela (otimização)
+        if (screenX < -50 || screenX > window.innerWidth + 50 || 
+            screenY < -50 || screenY > window.innerHeight + 50) {
+          return;
+        }
+        
+        // Trail/Rastro (apenas para partículas maiores)
+        if (particle.size > 2) {
+          particle.trail.push({ x: screenX, y: screenY });
+          if (particle.trail.length > 5) {
+            particle.trail.shift();
+          }
+          
+          // Desenhar trail
+          particle.trail.forEach((pos, idx) => {
+            const trailAlpha = (idx / particle.trail.length) * 0.3 * lifeFactor;
+            const trailSize = particle.size * (idx / particle.trail.length) * 0.5;
+            ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${trailAlpha})`;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, trailSize, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+        
+        // Desenhar partícula principal com glow melhorado
+        const alpha = 0.8 * lifeFactor;
+        
+        // Glow externo
+        const glowGradient = ctx.createRadialGradient(
+          screenX, screenY, 0,
+          screenX, screenY, particle.size * 3
+        );
+        glowGradient.addColorStop(0, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha})`);
+        glowGradient.addColorStop(0.5, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha * 0.3})`);
+        glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        
+        ctx.fillStyle = glowGradient;
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, particle.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Core da partícula (mais brilhante)
+        ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${Math.min(alpha * 1.5, 1)})`;
         ctx.beginPath();
         ctx.arc(screenX, screenY, particle.size, 0, Math.PI * 2);
         ctx.fill();
-        
-        // Add glow for some particles
-        if (i % 10 === 0) {
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 0.8)`;
-          ctx.beginPath();
-          ctx.arc(screenX, screenY, particle.size * 1.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
       });
 
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    animate(performance.now());
 
     return () => {
       window.removeEventListener('resize', setCanvasSize);
@@ -292,7 +369,7 @@ export default function BiomeMapCanvas() {
         className="absolute inset-0"
       />
       
-      {/* Biome Labels */}
+      {/* Biome Labels com glassmorphism melhorado */}
       <div className="absolute inset-0 pointer-events-none">
         {BIOMES.map((biome, index) => (
           <div
@@ -305,16 +382,19 @@ export default function BiomeMapCanvas() {
             }}
           >
             <div className="relative">
-              {/* Label */}
               <div 
-                className="px-4 py-2 rounded-full backdrop-blur-md border"
+                className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl"
                 style={{
-                  background: 'rgba(2, 6, 23, 0.7)',
-                  borderColor: 'rgba(255, 255, 255, 0.2)',
+                  background: 'rgba(2, 6, 23, 0.85)',
+                  borderColor: `${biome.color}40`,
+                  boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
                 }}
               >
                 <span 
-                  className="text-sm font-medium tracking-wide text-white"
+                  className="text-sm font-semibold tracking-wide text-white"
+                  style={{
+                    textShadow: `0 0 10px ${biome.color}80`
+                  }}
                 >
                   {biome.name}
                 </span>
@@ -324,7 +404,7 @@ export default function BiomeMapCanvas() {
         ))}
       </div>
       
-      {/* Title */}
+      {/* Title com sombra melhorada */}
       <motion.div
         className="absolute top-12 left-0 right-0 text-center pointer-events-none w-full px-6"
         initial={{ opacity: 0, y: -20 }}
@@ -337,29 +417,34 @@ export default function BiomeMapCanvas() {
           rel="noopener noreferrer"
           className="pointer-events-auto inline-block"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 hover:opacity-80 transition-opacity duration-300"
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 hover:opacity-80 transition-opacity duration-300"
               style={{
-                textShadow: '0 0 40px rgba(0, 155, 58, 0.5)'
+                textShadow: '0 0 60px rgba(0, 155, 58, 0.8), 0 0 30px rgba(0, 155, 58, 0.6), 0 4px 20px rgba(0, 0, 0, 0.8)'
               }}>
             Sandbox - Ecossistema
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-green-300/80 font-medium">Invite Only - Apenas por Convite</p>
+          <p className="text-base sm:text-lg md:text-xl text-green-300/90 font-medium"
+             style={{
+               textShadow: '0 0 20px rgba(0, 200, 100, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5)'
+             }}>
+            Invite Only - Apenas por Convite
+          </p>
         </a>
       </motion.div>
       
-      {/* Breathing gradient overlay */}
+      {/* Breathing gradient overlay melhorado */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         animate={{
-          opacity: [0.1, 0.2, 0.1]
+          opacity: [0.05, 0.15, 0.05]
         }}
         transition={{
-          duration: 4,
+          duration: 5,
           repeat: Infinity,
           ease: 'easeInOut'
         }}
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(0, 155, 58, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 50% 50%, rgba(0, 155, 58, 0.2) 0%, transparent 50%)'
         }}
       />
     </div>
