@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 // 5 Biomas brasileiros com cores da bandeira do Brasil
 const BIOMES = [
   { 
-    name: 'Ética', 
+    name: 'Cultura', 
     color: '#009B3A',
     accentColor: '#00C853',
     position: { x: 0.2, y: 0.3 },
@@ -14,7 +14,7 @@ const BIOMES = [
     chaos: 0.3
   },
   { 
-    name: 'Inovação', 
+    name: 'Negócios', 
     color: '#0066CC',
     accentColor: '#3399FF',
     position: { x: 0.8, y: 0.3 },
@@ -34,7 +34,7 @@ const BIOMES = [
     chaos: 0.4
   },
   { 
-    name: 'Sustentabilidade', 
+    name: 'Reconhecimento', 
     color: '#FFFFFF',
     accentColor: '#E8E8E8',
     position: { x: 0.75, y: 0.7 },
@@ -44,7 +44,7 @@ const BIOMES = [
     chaos: 0.5
   },
   { 
-    name: 'Humanidade', 
+    name: 'Ser Humano', 
     color: '#00A859',
     accentColor: '#00D966',
     position: { x: 0.5, y: 0.5 },
