@@ -163,15 +163,11 @@ function Particles({ mousePosition, hoveredBiome }) {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={PARTICLE_COUNT}
-          array={particleData.positions}
-          itemSize={3}
+          args={[particleData.positions, 3]}
         />
         <bufferAttribute
           attach="attributes-color"
-          count={PARTICLE_COUNT}
-          array={particleData.colors}
-          itemSize={3}
+          args={[particleData.colors, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
