@@ -81,10 +81,10 @@ function Particles({ mousePosition, hoveredBiome }) {
   targetColorsRef.current = particleData.colors.slice();
   
   useFrame((state, delta) => {
-    if (!meshRef.current) return;
+    if (!pointsRef.current) return;
     
-    const positions = meshRef.current.geometry.attributes.position.array;
-    const colors = meshRef.current.geometry.attributes.color.array;
+    const positions = pointsRef.current.geometry.attributes.position.array;
+    const colors = pointsRef.current.geometry.attributes.color.array;
     const time = state.clock.elapsedTime;
     
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -154,31 +154,38 @@ function Particles({ mousePosition, hoveredBiome }) {
       colors[i3 + 2] += (targetColorsRef.current[i3 + 2] - colors[i3 + 2]) * 0.1;
     }
     
-    meshRef.current.geometry.attributes.position.needsUpdate = true;
-    meshRef.current.geometry.attributes.color.needsUpdate = true;
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    pointsRef.current.geometry.attributes.color.needsUpdate = true;
   });
   
-  const geometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    return geo;
-  }, [positions, colors, sizes]);
-
   return (
-    <points ref={meshRef} geometry={geometry}>
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={PARTICLE_COUNT}
+          array={particleData.positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={PARTICLE_COUNT}
+          array={particleData.colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
       <pointsMaterial
         size={0.05}
         vertexColors
         transparent
         opacity={0.8}
-        sizeAttenuation
+        sizeAttenuation={true}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
     </points>
   );
+}
 }
 
 function CameraRig({ mousePosition }) {
