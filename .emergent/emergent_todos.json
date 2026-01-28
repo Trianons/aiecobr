@@ -24,6 +24,10 @@
     "status": "in_progress"
   },
   {
+    "content": "Phase 1: Switch to Canvas 2D approach due to R3F environment issues",
+    "status": "in_progress"
+  },
+  {
     "content": "Phase 1: All user stories covered and validated",
     "status": "pending"
   }
