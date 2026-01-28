@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-// 5 Biomas brasileiros com padrões de movimento únicos
+// 5 Biomas brasileiros com cores da bandeira do Brasil
 const BIOMES = [
   { 
     name: 'Ética', 
-    color: '#a78bfa', 
-    accentColor: '#fb923c',
+    color: '#009B3A', // Verde bandeira
+    accentColor: '#00C853',
     position: { x: 0.2, y: 0.3 },
     regionRadius: 0.18,
     // Caatinga - Movimento em espiral, resiliente e persistente
@@ -16,8 +16,8 @@ const BIOMES = [
   },
   { 
     name: 'Inovação', 
-    color: '#22d3ee', 
-    accentColor: '#3b82f6',
+    color: '#0066CC', // Azul bandeira (mais claro para visibilidade)
+    accentColor: '#3399FF',
     position: { x: 0.8, y: 0.3 },
     regionRadius: 0.18,
     // Amazônia - Movimento fluido como rios, rápido e caótico
@@ -27,8 +27,8 @@ const BIOMES = [
   },
   { 
     name: 'Colaboração', 
-    color: '#10b981', 
-    accentColor: '#fbbf24',
+    color: '#FFDF00', // Amarelo bandeira
+    accentColor: '#FFE44D',
     position: { x: 0.25, y: 0.7 },
     regionRadius: 0.18,
     // Mata Atlântica - Movimento orbital, interconectado
@@ -38,8 +38,8 @@ const BIOMES = [
   },
   { 
     name: 'Sustentabilidade', 
-    color: '#f59e0b', 
-    accentColor: '#eab308',
+    color: '#FFFFFF', // Branco bandeira
+    accentColor: '#F0F0F0',
     position: { x: 0.75, y: 0.7 },
     regionRadius: 0.18,
     // Cerrado - Movimento pulsante, ciclos e ritmos
@@ -49,8 +49,8 @@ const BIOMES = [
   },
   { 
     name: 'Humanidade', 
-    color: '#ec4899', 
-    accentColor: '#f472b6',
+    color: '#00A859', // Verde claro (variação do verde bandeira)
+    accentColor: '#00D966',
     position: { x: 0.5, y: 0.5 },
     regionRadius: 0.16,
     // Pantanal - Movimento ondulatório, fluido e adaptável
@@ -312,9 +312,10 @@ export default function BiomeMapCanvas() {
             }}
             onMouseEnter={() => setHoveredBiome(index)}
             onMouseLeave={() => setHoveredBiome(null)}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.15 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             animate={{
-              opacity: hoveredBiome === index ? 1 : 0.7,
+              opacity: hoveredBiome === index ? 1 : 0.8,
             }}
           >
             <div className="relative group">
@@ -371,11 +372,11 @@ export default function BiomeMapCanvas() {
       >
         <h1 className="text-6xl font-bold text-white mb-2"
             style={{
-              textShadow: '0 0 40px rgba(34, 211, 238, 0.5)'
+              textShadow: '0 0 40px rgba(0, 155, 58, 0.5)'
             }}>
-          ai.eco.br
+          Ecossistema de Inteligência Artificial
         </h1>
-        <p className="text-xl text-cyan-300/80">Ecossistema Vivo de IA Humanista</p>
+        <p className="text-xl text-green-300/80">Comunidade Brasileira de IA Humanista</p>
       </motion.div>
       
       {/* CTA */}
@@ -388,15 +389,15 @@ export default function BiomeMapCanvas() {
         <button 
           className="px-8 py-4 rounded-full font-medium text-lg transition-all duration-300"
           style={{
-            background: 'linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%)',
-            boxShadow: '0 0 30px rgba(34, 211, 238, 0.4)',
+            background: 'linear-gradient(135deg, #009B3A 0%, #00A859 100%)',
+            boxShadow: '0 0 30px rgba(0, 155, 58, 0.4)',
           }}
           onMouseEnter={(e) => {
-            e.target.style.boxShadow = '0 0 50px rgba(34, 211, 238, 0.6)';
+            e.target.style.boxShadow = '0 0 50px rgba(0, 155, 58, 0.6)';
             e.target.style.transform = 'scale(1.05)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.boxShadow = '0 0 30px rgba(34, 211, 238, 0.4)';
+            e.target.style.boxShadow = '0 0 30px rgba(0, 155, 58, 0.4)';
             e.target.style.transform = 'scale(1)';
           }}
         >
@@ -416,7 +417,7 @@ export default function BiomeMapCanvas() {
           ease: 'easeInOut'
         }}
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 50% 50%, rgba(0, 155, 58, 0.1) 0%, transparent 50%)'
         }}
       />
     </div>
