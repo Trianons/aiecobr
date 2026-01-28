@@ -186,7 +186,6 @@ function Particles({ mousePosition, hoveredBiome }) {
     </points>
   );
 }
-}
 
 function CameraRig({ mousePosition }) {
   const { camera } = useThree();
