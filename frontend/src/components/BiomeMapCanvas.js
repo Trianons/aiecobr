@@ -1,13 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-// 5 Biomas brasileiros - Disposição em pirâmide
+// 5 Biomas brasileiros - Disposição em pirâmide ajustada
 const BIOMES = [
   { 
     name: 'Cultura', 
     color: '#009B3A',
     accentColor: '#00C853',
-    position: { x: 0.3, y: 0.75 }, // Base esquerda
+    position: { x: 0.25, y: 0.75 }, // Base esquerda
     regionRadius: 0.18,
     movementPattern: 'spiral',
     movementSpeed: 0.0008,
@@ -18,7 +18,7 @@ const BIOMES = [
     name: 'Negócios', 
     color: '#0066CC',
     accentColor: '#3399FF',
-    position: { x: 0.35, y: 0.45 }, // Meio esquerda
+    position: { x: 0.65, y: 0.5 }, // Entre Reconhecimento e Colaboração
     regionRadius: 0.18,
     movementPattern: 'flow',
     movementSpeed: 0.0015,
@@ -29,7 +29,7 @@ const BIOMES = [
     name: 'Colaboração', 
     color: '#FFDF00',
     accentColor: '#FFE44D',
-    position: { x: 0.7, y: 0.75 }, // Base direita
+    position: { x: 0.75, y: 0.75 }, // Base direita
     regionRadius: 0.18,
     movementPattern: 'orbital',
     movementSpeed: 0.001,
@@ -51,7 +51,7 @@ const BIOMES = [
     name: 'Ser Humano', 
     color: '#00A859',
     accentColor: '#00D966',
-    position: { x: 0.65, y: 0.45 }, // Meio direita
+    position: { x: 0.5, y: 0.75 }, // Centro da base, entre Cultura e Colaboração
     regionRadius: 0.16,
     movementPattern: 'wave',
     movementSpeed: 0.001,
