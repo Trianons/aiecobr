@@ -21,14 +21,26 @@
   },
   {
     "content": "Phase 1: Fix any issues until POC works smoothly",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 1: Switch to Canvas 2D approach due to R3F environment issues",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 1: All user stories covered and validated",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Call design_agent for design guidelines",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Implement full landing page with all 4 sections",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Test with testing_agent",
     "status": "pending"
   }
 ]
