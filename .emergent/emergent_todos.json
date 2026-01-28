@@ -1,11 +1,11 @@
 [
   {
     "content": "Phase 1: Research best practices for react-three-fiber particle systems",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 1: Install required dependencies (three, @react-three/fiber, @react-three/drei)",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 1: Create BiomeMap POC component with 5 attractors and particle system",
