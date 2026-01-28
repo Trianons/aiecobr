@@ -11,7 +11,8 @@ const BIOMES = [
     regionRadius: 0.18,
     movementPattern: 'spiral',
     movementSpeed: 0.0008,
-    chaos: 0.3
+    chaos: 0.3,
+    weight: 1.0 // Densidade normal
   },
   { 
     name: 'Negócios', 
@@ -21,7 +22,8 @@ const BIOMES = [
     regionRadius: 0.18,
     movementPattern: 'flow',
     movementSpeed: 0.0015,
-    chaos: 0.7
+    chaos: 0.7,
+    weight: 1.4 // Mais partículas
   },
   { 
     name: 'Colaboração', 
@@ -31,7 +33,8 @@ const BIOMES = [
     regionRadius: 0.18,
     movementPattern: 'orbital',
     movementSpeed: 0.001,
-    chaos: 0.4
+    chaos: 0.4,
+    weight: 0.6 // Menos partículas
   },
   { 
     name: 'Reconhecimento', 
@@ -41,7 +44,8 @@ const BIOMES = [
     regionRadius: 0.18,
     movementPattern: 'pulse',
     movementSpeed: 0.0012,
-    chaos: 0.5
+    chaos: 0.5,
+    weight: 1.4 // Mais partículas
   },
   { 
     name: 'Ser Humano', 
@@ -51,7 +55,8 @@ const BIOMES = [
     regionRadius: 0.16,
     movementPattern: 'wave',
     movementSpeed: 0.001,
-    chaos: 0.6
+    chaos: 0.6,
+    weight: 1.0 // Densidade normal
   }
 ];
 
@@ -84,9 +89,21 @@ export default function BiomeMapCanvas() {
     setCanvasSize();
     window.addEventListener('resize', setCanvasSize);
 
-    // Initialize particles
+    // Initialize particles com distribuição ponderada
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => {
-      const biome = BIOMES[Math.floor(Math.random() * BIOMES.length)];
+      // Weighted random selection
+      const totalWeight = BIOMES.reduce((sum, b) => sum + b.weight, 0);
+      let random = Math.random() * totalWeight;
+      let biome = BIOMES[0];
+      
+      for (const b of BIOMES) {
+        random -= b.weight;
+        if (random <= 0) {
+          biome = b;
+          break;
+        }
+      }
+      
       const offsetX = (Math.random() - 0.5) * 0.35;
       const offsetY = (Math.random() - 0.5) * 0.35;
       
