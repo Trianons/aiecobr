@@ -44,16 +44,15 @@ const BIOMES = [
 
 const PARTICLE_COUNT = 5000;
 
-function ParticleField({ mousePosition, hoveredBiome }) {
-  const meshRef = useRef();
+function Particles({ mousePosition, hoveredBiome }) {
+  const pointsRef = useRef();
   const velocitiesRef = useRef();
   const targetColorsRef = useRef();
   
-  const { positions, colors, velocities, sizes } = useMemo(() => {
+  const particleData = useMemo(() => {
     const positions = new Float32Array(PARTICLE_COUNT * 3);
     const colors = new Float32Array(PARTICLE_COUNT * 3);
     const velocities = new Float32Array(PARTICLE_COUNT * 3);
-    const sizes = new Float32Array(PARTICLE_COUNT);
     
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
@@ -73,15 +72,13 @@ function ParticleField({ mousePosition, hoveredBiome }) {
       velocities[i3] = (Math.random() - 0.5) * 0.02;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.02;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
-      
-      sizes[i] = Math.random() * 2 + 0.5;
     }
     
-    return { positions, colors, velocities, sizes };
+    return { positions, colors, velocities };
   }, []);
   
-  velocitiesRef.current = velocities;
-  targetColorsRef.current = colors.slice();
+  velocitiesRef.current = particleData.velocities;
+  targetColorsRef.current = particleData.colors.slice();
   
   useFrame((state, delta) => {
     if (!meshRef.current) return;
