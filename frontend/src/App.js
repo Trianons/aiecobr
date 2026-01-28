@@ -1,11 +1,11 @@
 import React from 'react';
-import BiomeMap from './components/BiomeMap';
+import BiomeMapCanvas from './components/BiomeMapCanvas';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <BiomeMap />
+      <BiomeMapCanvas />
     </div>
   );
 }
