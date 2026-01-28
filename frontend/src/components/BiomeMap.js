@@ -161,28 +161,16 @@ function ParticleField({ mousePosition, hoveredBiome }) {
     meshRef.current.geometry.attributes.color.needsUpdate = true;
   });
   
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    return geo;
+  }, [positions, colors, sizes]);
+
   return (
-    <points ref={meshRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={PARTICLE_COUNT}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={PARTICLE_COUNT}
-          array={colors}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-size"
-          count={PARTICLE_COUNT}
-          array={sizes}
-          itemSize={1}
-        />
-      </bufferGeometry>
+    <points ref={meshRef} geometry={geometry}>
       <pointsMaterial
         size={0.05}
         vertexColors
