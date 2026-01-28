@@ -117,7 +117,7 @@ export default function BiomeMapCanvas() {
         primaryBiome: biome,
         angle: Math.random() * Math.PI * 2,
         phaseOffset: Math.random() * Math.PI * 2,
-        size: Math.random() * 3 + 1,
+        size: Math.random() * 4 + 1.5, // Partículas maiores para melhor visibilidade
         currentColor: hexToRgb(biome.color),
         transitionInfluence: 0.3,
         life: Math.random(), // Para variação de brilho
@@ -317,33 +317,34 @@ export default function BiomeMapCanvas() {
           });
         }
         
-        // Desenhar partícula principal com glow melhorado
-        const alpha = 0.9 * lifeFactor;
+        // Desenhar partícula principal com máxima visibilidade
+        const alpha = 1; // Máxima opacidade
         
-        // Glow externo (mais visível)
+        // Glow externo (muito mais visível)
         const glowGradient = ctx.createRadialGradient(
           screenX, screenY, 0,
-          screenX, screenY, particle.size * 4
+          screenX, screenY, particle.size * 5
         );
-        glowGradient.addColorStop(0, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha * 0.8})`);
-        glowGradient.addColorStop(0.4, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${alpha * 0.4})`);
+        glowGradient.addColorStop(0, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 1)`);
+        glowGradient.addColorStop(0.3, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 0.6)`);
+        glowGradient.addColorStop(0.6, `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 0.3)`);
         glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
         
         ctx.fillStyle = glowGradient;
         ctx.beginPath();
-        ctx.arc(screenX, screenY, particle.size * 4, 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, particle.size * 5, 0, Math.PI * 2);
         ctx.fill();
         
         // Core da partícula (muito brilhante e visível)
         ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, 1)`;
         ctx.beginPath();
-        ctx.arc(screenX, screenY, particle.size, 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, particle.size * 1.2, 0, Math.PI * 2);
         ctx.fill();
         
-        // Highlight no centro para mais brilho
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+        // Highlight no centro para máximo brilho
+        ctx.fillStyle = `rgba(255, 255, 255, 0.8)`;
         ctx.beginPath();
-        ctx.arc(screenX, screenY, particle.size * 0.5, 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, particle.size * 0.6, 0, Math.PI * 2);
         ctx.fill();
       });
 
