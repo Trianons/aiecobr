@@ -17,11 +17,11 @@
   },
   {
     "content": "Phase 1: Test POC performance and interactions on preview URL",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 1: Fix any issues until POC works smoothly",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 1: All user stories covered and validated",
