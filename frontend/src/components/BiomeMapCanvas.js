@@ -85,7 +85,6 @@ export default function BiomeMapCanvas() {
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const [hoveredBiome, setHoveredBiome] = useState(null);
   const animationRef = useRef(null);
 
   useEffect(() => {
@@ -236,12 +235,6 @@ export default function BiomeMapCanvas() {
           };
         }
         
-        // Hover pulse effect
-        if (hoveredBiome === 0 && primaryBiome.name === 'Ética') {
-          const pulse = Math.sin(time * 3) * 0.5 + 0.5;
-          targetColor = lerpColor(primaryBiome.color, primaryBiome.accentColor, pulse);
-        }
-        
         // Smooth color transition
         particle.currentColor.r += (targetColor.r - particle.currentColor.r) * 0.08;
         particle.currentColor.g += (targetColor.g - particle.currentColor.g) * 0.08;
@@ -278,7 +271,7 @@ export default function BiomeMapCanvas() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [hoveredBiome]);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
