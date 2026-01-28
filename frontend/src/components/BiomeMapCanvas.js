@@ -326,18 +326,25 @@ export default function BiomeMapCanvas() {
       
       {/* Title */}
       <motion.div
-        className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-none"
+        className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-none w-full px-6"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
-        <h1 className="text-6xl font-bold text-white mb-2"
-            style={{
-              textShadow: '0 0 40px rgba(0, 155, 58, 0.5)'
-            }}>
-          Ecossistema de Inteligência Artificial
-        </h1>
-        <p className="text-xl text-green-300/80">Comunidade Brasileira de IA Humanista</p>
+        <a 
+          href="https://ai.eco.br" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="pointer-events-auto inline-block"
+        >
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 hover:opacity-80 transition-opacity duration-300"
+              style={{
+                textShadow: '0 0 40px rgba(0, 155, 58, 0.5)'
+              }}>
+            Ecossistema de Inteligência Artificial
+          </h1>
+        </a>
+        <p className="text-lg sm:text-xl text-green-300/80">Comunidade Brasileira de IA Humanista</p>
       </motion.div>
       
       {/* CTA */}
@@ -347,23 +354,29 @@ export default function BiomeMapCanvas() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 1 }}
       >
-        <button 
-          className="px-8 py-4 rounded-full font-medium text-lg transition-all duration-300"
-          style={{
-            background: 'linear-gradient(135deg, #009B3A 0%, #00A859 100%)',
-            boxShadow: '0 0 30px rgba(0, 155, 58, 0.4)',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.boxShadow = '0 0 50px rgba(0, 155, 58, 0.6)';
-            e.target.style.transform = 'scale(1.05)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.boxShadow = '0 0 30px rgba(0, 155, 58, 0.4)';
-            e.target.style.transform = 'scale(1)';
-          }}
+        <a 
+          href="https://ai.eco.br" 
+          target="_blank" 
+          rel="noopener noreferrer"
         >
-          Explorar Biomas
-        </button>
+          <button 
+            className="px-8 py-4 rounded-full font-medium text-lg transition-all duration-300"
+            style={{
+              background: 'linear-gradient(135deg, #009B3A 0%, #00A859 100%)',
+              boxShadow: '0 0 30px rgba(0, 155, 58, 0.4)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.boxShadow = '0 0 50px rgba(0, 155, 58, 0.6)';
+              e.target.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.boxShadow = '0 0 30px rgba(0, 155, 58, 0.4)';
+              e.target.style.transform = 'scale(1)';
+            }}
+          >
+            Explorar Biomas
+          </button>
+        </a>
       </motion.div>
       
       {/* Breathing gradient overlay */}
