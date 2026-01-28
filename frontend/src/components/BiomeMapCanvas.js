@@ -1,46 +1,66 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-// 5 Biomas brasileiros
+// 5 Biomas brasileiros com padrões de movimento únicos
 const BIOMES = [
   { 
     name: 'Ética', 
     color: '#a78bfa', 
     accentColor: '#fb923c',
     position: { x: 0.2, y: 0.3 },
-    regionRadius: 0.15
+    regionRadius: 0.18,
+    // Caatinga - Movimento em espiral, resiliente e persistente
+    movementPattern: 'spiral',
+    movementSpeed: 0.0008,
+    chaos: 0.3
   },
   { 
     name: 'Inovação', 
     color: '#22d3ee', 
     accentColor: '#3b82f6',
     position: { x: 0.8, y: 0.3 },
-    regionRadius: 0.15
+    regionRadius: 0.18,
+    // Amazônia - Movimento fluido como rios, rápido e caótico
+    movementPattern: 'flow',
+    movementSpeed: 0.0015,
+    chaos: 0.7
   },
   { 
     name: 'Colaboração', 
     color: '#10b981', 
     accentColor: '#fbbf24',
     position: { x: 0.25, y: 0.7 },
-    regionRadius: 0.15
+    regionRadius: 0.18,
+    // Mata Atlântica - Movimento orbital, interconectado
+    movementPattern: 'orbital',
+    movementSpeed: 0.001,
+    chaos: 0.4
   },
   { 
     name: 'Sustentabilidade', 
     color: '#f59e0b', 
     accentColor: '#eab308',
     position: { x: 0.75, y: 0.7 },
-    regionRadius: 0.15
+    regionRadius: 0.18,
+    // Cerrado - Movimento pulsante, ciclos e ritmos
+    movementPattern: 'pulse',
+    movementSpeed: 0.0012,
+    chaos: 0.5
   },
   { 
     name: 'Humanidade', 
     color: '#ec4899', 
     accentColor: '#f472b6',
     position: { x: 0.5, y: 0.5 },
-    regionRadius: 0.12
+    regionRadius: 0.16,
+    // Pantanal - Movimento ondulatório, fluido e adaptável
+    movementPattern: 'wave',
+    movementSpeed: 0.001,
+    chaos: 0.6
   }
 ];
 
-const PARTICLE_COUNT = 3000;
+const PARTICLE_COUNT = 4000; // Mais partículas para melhor sobreposição
 
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -80,20 +100,23 @@ export default function BiomeMapCanvas() {
     setCanvasSize();
     window.addEventListener('resize', setCanvasSize);
 
-    // Initialize particles
+    // Initialize particles - distribuídas para permitir sobreposição
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => {
       const biome = BIOMES[Math.floor(Math.random() * BIOMES.length)];
-      const offsetX = (Math.random() - 0.5) * 0.2;
-      const offsetY = (Math.random() - 0.5) * 0.2;
+      const offsetX = (Math.random() - 0.5) * 0.35; // Maior dispersão
+      const offsetY = (Math.random() - 0.5) * 0.35;
       
       return {
         x: biome.position.x + offsetX,
         y: biome.position.y + offsetY,
-        vx: (Math.random() - 0.5) * 0.0005,
-        vy: (Math.random() - 0.5) * 0.0005,
-        biome: biome,
-        size: Math.random() * 2 + 1,
-        currentColor: hexToRgb(biome.color)
+        vx: (Math.random() - 0.5) * 0.001,
+        vy: (Math.random() - 0.5) * 0.001,
+        primaryBiome: biome,
+        angle: Math.random() * Math.PI * 2, // Para movimentos circulares
+        phaseOffset: Math.random() * Math.PI * 2, // Para variação
+        size: Math.random() * 2.5 + 0.8,
+        currentColor: hexToRgb(biome.color),
+        transitionInfluence: 0.3 // Permite influência de biomas vizinhos
       };
     });
 
@@ -105,57 +128,124 @@ export default function BiomeMapCanvas() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((particle, i) => {
-        // Find closest biome
-        let minDist = Infinity;
-        let closestBiome = BIOMES[0];
-        
-        for (const biome of BIOMES) {
+        // Encontrar biomas influentes (primário e secundários para sobreposição)
+        const influences = BIOMES.map(biome => {
           const dx = particle.x - biome.position.x;
           const dy = particle.y - biome.position.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist) {
-            minDist = dist;
-            closestBiome = biome;
-          }
+          return { biome, dist, dx, dy };
+        }).sort((a, b) => a.dist - b.dist);
+        
+        const primaryBiome = influences[0].biome;
+        const secondaryBiome = influences[1].biome;
+        
+        // Aplicar padrão de movimento único do bioma primário
+        switch(primaryBiome.movementPattern) {
+          case 'spiral':
+            // Caatinga - Espiral para dentro/fora
+            particle.angle += primaryBiome.movementSpeed * 2;
+            const spiralRadius = 0.15 + Math.sin(time * 0.5 + particle.phaseOffset) * 0.05;
+            const spiralX = primaryBiome.position.x + Math.cos(particle.angle) * spiralRadius;
+            const spiralY = primaryBiome.position.y + Math.sin(particle.angle) * spiralRadius;
+            particle.vx += (spiralX - particle.x) * 0.0002;
+            particle.vy += (spiralY - particle.y) * 0.0002;
+            break;
+            
+          case 'flow':
+            // Amazônia - Fluxo rápido e caótico como rios
+            const flowDx = influences[0].dx;
+            const flowDy = influences[0].dy;
+            const flowDist = influences[0].dist;
+            particle.vx += (-flowDx / flowDist) * 0.00015 * (1 + Math.sin(time * 3 + i) * 0.5);
+            particle.vy += (-flowDy / flowDist) * 0.00015 * (1 + Math.cos(time * 3 + i) * 0.5);
+            // Turbulência extra
+            particle.vx += Math.sin(time * 2 + i * 0.5) * 0.0003;
+            particle.vy += Math.cos(time * 2.5 + i * 0.5) * 0.0003;
+            break;
+            
+          case 'orbital':
+            // Mata Atlântica - Órbitas interconectadas
+            particle.angle += primaryBiome.movementSpeed;
+            const orbitX = primaryBiome.position.x + Math.cos(particle.angle + time) * 0.12;
+            const orbitY = primaryBiome.position.y + Math.sin(particle.angle + time * 0.8) * 0.12;
+            particle.vx += (orbitX - particle.x) * 0.00025;
+            particle.vy += (orbitY - particle.y) * 0.00025;
+            break;
+            
+          case 'pulse':
+            // Cerrado - Pulsação rítmica
+            const pulseFactor = Math.sin(time * 1.5 + particle.phaseOffset) * 0.5 + 0.5;
+            const pulseDx = influences[0].dx;
+            const pulseDy = influences[0].dy;
+            const pulseDist = influences[0].dist;
+            const pulseForce = 0.0001 * (0.5 + pulseFactor);
+            particle.vx += (-pulseDx / pulseDist) * pulseForce;
+            particle.vy += (-pulseDy / pulseDist) * pulseForce;
+            break;
+            
+          case 'wave':
+            // Pantanal - Ondas fluidas e adaptáveis
+            const waveX = Math.sin(time * 1.2 + particle.y * 5 + particle.phaseOffset) * 0.0002;
+            const waveY = Math.cos(time * 1.2 + particle.x * 5 + particle.phaseOffset) * 0.0002;
+            particle.vx += waveX;
+            particle.vy += waveY;
+            const waveDx = influences[0].dx;
+            const waveDy = influences[0].dy;
+            const waveDist = influences[0].dist;
+            particle.vx += (-waveDx / waveDist) * 0.00008;
+            particle.vy += (-waveDy / waveDist) * 0.00008;
+            break;
         }
-
-        // Attractor force
-        const dx = closestBiome.position.x - particle.x;
-        const dy = closestBiome.position.y - particle.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const force = 0.00001;
         
-        particle.vx += (dx / dist) * force;
-        particle.vy += (dy / dist) * force;
+        // Adicionar influência do bioma secundário (sobreposição)
+        if (secondaryBiome && influences[1].dist < 0.25) {
+          const secondaryInfluence = (0.25 - influences[1].dist) / 0.25 * particle.transitionInfluence;
+          particle.vx += (-influences[1].dx / influences[1].dist) * 0.00005 * secondaryInfluence;
+          particle.vy += (-influences[1].dy / influences[1].dist) * 0.00005 * secondaryInfluence;
+        }
         
-        // Damping
-        particle.vx *= 0.99;
-        particle.vy *= 0.99;
+        // Caos e aleatoriedade por bioma
+        const chaosLevel = primaryBiome.chaos;
+        particle.vx += (Math.random() - 0.5) * 0.0001 * chaosLevel;
+        particle.vy += (Math.random() - 0.5) * 0.0001 * chaosLevel;
         
-        // Noise
-        particle.vx += Math.sin(time + i * 0.1) * 0.00001;
-        particle.vy += Math.cos(time + i * 0.1) * 0.00001;
+        // Damping suave
+        particle.vx *= 0.98;
+        particle.vy *= 0.98;
         
         // Update position
         particle.x += particle.vx;
         particle.y += particle.vy;
         
         // Mouse parallax effect (subtle)
-        const parallaxStrength = 0.01;
+        const parallaxStrength = 0.015;
         const px = (mouseRef.current.x - 0.5) * parallaxStrength;
         const py = (mouseRef.current.y - 0.5) * parallaxStrength;
         
-        // Color animation
-        let targetColor = hexToRgb(closestBiome.color);
-        if (hoveredBiome === 0 && closestBiome.name === 'Ética') {
+        // Mistura de cores entre biomas (sobreposição visual)
+        let targetColor = hexToRgb(primaryBiome.color);
+        
+        // Se próximo de outro bioma, misturar cores
+        if (secondaryBiome && influences[1].dist < 0.2) {
+          const mixFactor = (0.2 - influences[1].dist) / 0.2 * 0.4;
+          const secondaryColor = hexToRgb(secondaryBiome.color);
+          targetColor = {
+            r: targetColor.r * (1 - mixFactor) + secondaryColor.r * mixFactor,
+            g: targetColor.g * (1 - mixFactor) + secondaryColor.g * mixFactor,
+            b: targetColor.b * (1 - mixFactor) + secondaryColor.b * mixFactor
+          };
+        }
+        
+        // Hover pulse effect
+        if (hoveredBiome === 0 && primaryBiome.name === 'Ética') {
           const pulse = Math.sin(time * 3) * 0.5 + 0.5;
-          targetColor = lerpColor(closestBiome.color, closestBiome.accentColor, pulse);
+          targetColor = lerpColor(primaryBiome.color, primaryBiome.accentColor, pulse);
         }
         
         // Smooth color transition
-        particle.currentColor.r += (targetColor.r - particle.currentColor.r) * 0.05;
-        particle.currentColor.g += (targetColor.g - particle.currentColor.g) * 0.05;
-        particle.currentColor.b += (targetColor.b - particle.currentColor.b) * 0.05;
+        particle.currentColor.r += (targetColor.r - particle.currentColor.r) * 0.08;
+        particle.currentColor.g += (targetColor.g - particle.currentColor.g) * 0.08;
+        particle.currentColor.b += (targetColor.b - particle.currentColor.b) * 0.08;
         
         // Draw particle
         const screenX = (particle.x + px) * canvas.width;
