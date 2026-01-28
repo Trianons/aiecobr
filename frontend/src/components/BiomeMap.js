@@ -295,7 +295,7 @@ export default function BiomeMap() {
         dpr={[1, 2]}
       >
         <ambientLight intensity={0.5} />
-        <ParticleField mousePosition={mousePosition} hoveredBiome={hoveredBiome} />
+        <Particles mousePosition={mousePosition} hoveredBiome={hoveredBiome} />
         <CameraRig mousePosition={mousePosition} />
       </Canvas>
       
