@@ -1,0 +1,30 @@
+[
+  {
+    "content": "Phase 1: Research best practices for react-three-fiber particle systems",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 1: Install required dependencies (three, @react-three/fiber, @react-three/drei)",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 1: Create BiomeMap POC component with 5 attractors and particle system",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 1: Implement cursor parallax and hover pulse for Ética biome",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 1: Test POC performance and interactions on preview URL",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 1: Fix any issues until POC works smoothly",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 1: All user stories covered and validated",
+    "status": "pending"
+  }
+]
