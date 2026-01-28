@@ -302,64 +302,32 @@ export default function BiomeMapCanvas() {
       {/* Biome Labels */}
       <div className="absolute inset-0 pointer-events-none">
         {BIOMES.map((biome, index) => (
-          <motion.div
+          <div
             key={biome.name}
-            className="absolute pointer-events-auto cursor-pointer"
+            className="absolute"
             style={{
               left: `${biome.position.x * 100}%`,
               top: `${biome.position.y * 100}%`,
               transform: 'translate(-50%, -50%)'
             }}
-            onMouseEnter={() => setHoveredBiome(index)}
-            onMouseLeave={() => setHoveredBiome(null)}
-            whileHover={{ scale: 1.15 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            animate={{
-              opacity: hoveredBiome === index ? 1 : 0.8,
-            }}
           >
-            <div className="relative group">
-              {/* Glow ring */}
-              <div 
-                className="absolute inset-0 rounded-full blur-xl transition-all duration-300"
-                style={{
-                  background: hoveredBiome === index 
-                    ? `radial-gradient(circle, ${biome.color} 0%, transparent 70%)`
-                    : 'transparent',
-                  width: '120px',
-                  height: '120px',
-                  transform: 'translate(-50%, -50%)',
-                  left: '50%',
-                  top: '50%'
-                }}
-              />
-              
+            <div className="relative">
               {/* Label */}
               <div 
-                className="relative px-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300"
+                className="px-4 py-2 rounded-full backdrop-blur-md border"
                 style={{
-                  background: hoveredBiome === index 
-                    ? `${biome.color}20`
-                    : 'rgba(2, 6, 23, 0.6)',
-                  borderColor: hoveredBiome === index 
-                    ? biome.color
-                    : 'rgba(255, 255, 255, 0.1)',
-                  boxShadow: hoveredBiome === index 
-                    ? `0 0 20px ${biome.color}40`
-                    : 'none'
+                  background: 'rgba(2, 6, 23, 0.7)',
+                  borderColor: 'rgba(255, 255, 255, 0.2)',
                 }}
               >
                 <span 
-                  className="text-sm font-medium tracking-wide"
-                  style={{
-                    color: hoveredBiome === index ? biome.color : '#fff'
-                  }}
+                  className="text-sm font-medium tracking-wide text-white"
                 >
                   {biome.name}
                 </span>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
       
