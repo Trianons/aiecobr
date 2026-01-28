@@ -341,10 +341,10 @@ export default function BiomeMapCanvas() {
               style={{
                 textShadow: '0 0 40px rgba(0, 155, 58, 0.5)'
               }}>
-            Ecossistema de Inteligência Artificial
+            Sandbox - Ecossistema
           </h1>
+          <p className="text-lg sm:text-xl text-green-300/80 font-medium">Invite Only - Apenas por Convite</p>
         </a>
-        <p className="text-lg sm:text-xl text-green-300/80">Comunidade Brasileira de IA Humanista</p>
       </motion.div>
       
       {/* CTA */}
