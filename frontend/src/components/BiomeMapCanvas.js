@@ -55,7 +55,7 @@ const BIOMES = [
   }
 ];
 
-const PARTICLE_COUNT = 6000; // Aumentado para mais impacto visual
+const PARTICLE_COUNT = 5000; // Otimizado para performance
 
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -299,17 +299,17 @@ export default function BiomeMapCanvas() {
           return;
         }
         
-        // Trail/Rastro (apenas para partículas maiores)
-        if (particle.size > 2) {
+        // Trail/Rastro (apenas para partículas maiores - otimizado)
+        if (particle.size > 2.5 && i % 3 === 0) { // Reduzir trails para performance
           particle.trail.push({ x: screenX, y: screenY });
-          if (particle.trail.length > 5) {
+          if (particle.trail.length > 3) {
             particle.trail.shift();
           }
           
           // Desenhar trail
           particle.trail.forEach((pos, idx) => {
-            const trailAlpha = (idx / particle.trail.length) * 0.3 * lifeFactor;
-            const trailSize = particle.size * (idx / particle.trail.length) * 0.5;
+            const trailAlpha = (idx / particle.trail.length) * 0.25 * lifeFactor;
+            const trailSize = particle.size * (idx / particle.trail.length) * 0.4;
             ctx.fillStyle = `rgba(${Math.round(particle.currentColor.r)}, ${Math.round(particle.currentColor.g)}, ${Math.round(particle.currentColor.b)}, ${trailAlpha})`;
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, trailSize, 0, Math.PI * 2);
