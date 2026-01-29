@@ -140,19 +140,27 @@ export default function BiomeMapCanvas() {
         const primaryBiome = influences[0].biome;
         const secondaryBiome = influences[1].biome;
         
-        // Sistema de atração cruzada para fluxo entre biomas
-        BIOMES.forEach(attractorBiome => {
-          if (attractorBiome.attracts && attractorBiome.attracts.includes(primaryBiome.name)) {
-            const dx = attractorBiome.position.x - particle.x;
-            const dy = attractorBiome.position.y - particle.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+        // FORÇA DO EGO - Ser Humano sempre influencia TODAS as partículas próximas
+        const serHumanoBiome = BIOMES.find(b => b.name === 'Ser Humano');
+        if (serHumanoBiome) {
+          const dx = particle.x - serHumanoBiome.position.x;
+          const dy = particle.y - serHumanoBiome.position.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          // Força do ego diminui com distância mas sempre presente
+          if (dist < 0.4) { // Raio de influência do ego
+            const egoInfluence = (0.4 - dist) / 0.4;
+            const egoForce = (serHumanoBiome.egoForce || 1.0) * 0.00008 * egoInfluence;
             
-            // Força de atração cruzada
-            const crossAttractionForce = 0.00015;
-            particle.vx += (dx / dist) * crossAttractionForce;
-            particle.vy += (dy / dist) * crossAttractionForce;
+            // Ego atrai partículas
+            particle.vx += (-dx / dist) * egoForce;
+            particle.vy += (-dy / dist) * egoForce;
+            
+            // Adiciona caos extra (ego é imprevisível)
+            particle.vx += (Math.random() - 0.5) * 0.0003 * egoInfluence;
+            particle.vy += (Math.random() - 0.5) * 0.0003 * egoInfluence;
           }
-        });
+        }
         
         // Apply movement patterns
         switch(primaryBiome.movementPattern) {
@@ -161,8 +169,18 @@ export default function BiomeMapCanvas() {
             const spiralRadius = 0.15 + Math.sin(time * 0.5 + particle.phaseOffset) * 0.05;
             const spiralX = primaryBiome.position.x + Math.cos(particle.angle) * spiralRadius;
             const spiralY = primaryBiome.position.y + Math.sin(particle.angle) * spiralRadius;
-            particle.vx += (spiralX - particle.x) * 0.0002;
-            particle.vy += (spiralY - particle.y) * 0.0002;
+            const spiralForce = 0.0002;
+            particle.vx += (spiralX - particle.x) * spiralForce;
+            particle.vy += (spiralY - particle.y) * spiralForce;
+            
+            // Cultura: força de repulsão para dispersão
+            if (primaryBiome.repelForce) {
+              const repelDist = influences[0].dist;
+              if (repelDist < 0.08) { // Muito perto do centro
+                particle.vx += (influences[0].dx / repelDist) * 0.00005 * primaryBiome.repelForce;
+                particle.vy += (influences[0].dy / repelDist) * 0.00005 * primaryBiome.repelForce;
+              }
+            }
             break;
             
           case 'flow':
@@ -181,8 +199,9 @@ export default function BiomeMapCanvas() {
             particle.angle += primaryBiome.movementSpeed;
             const orbitX = primaryBiome.position.x + Math.cos(particle.angle + time) * 0.12;
             const orbitY = primaryBiome.position.y + Math.sin(particle.angle + time * 0.8) * 0.12;
-            particle.vx += (orbitX - particle.x) * 0.00025;
-            particle.vy += (orbitY - particle.y) * 0.00025;
+            const orbitForce = (primaryBiome.attractionForce || 1.0) * 0.00025;
+            particle.vx += (orbitX - particle.x) * orbitForce;
+            particle.vy += (orbitY - particle.y) * orbitForce;
             break;
             
           case 'pulse':
@@ -203,8 +222,18 @@ export default function BiomeMapCanvas() {
             const waveDx = influences[0].dx;
             const waveDy = influences[0].dy;
             const waveDist = influences[0].dist;
-            particle.vx += (-waveDx / waveDist) * 0.00008;
-            particle.vy += (-waveDy / waveDist) * 0.00008;
+            
+            // Ser Humano tem força ego extra - atração forte mas também repele quando muito perto
+            const egoForce = (primaryBiome.egoForce || 1.0) * 0.00012;
+            if (waveDist > 0.05) {
+              // Atração normal
+              particle.vx += (-waveDx / waveDist) * egoForce;
+              particle.vy += (-waveDy / waveDist) * egoForce;
+            } else {
+              // Repulsão quando muito perto (ego pessoal)
+              particle.vx += (waveDx / waveDist) * egoForce * 0.3;
+              particle.vy += (waveDy / waveDist) * egoForce * 0.3;
+            }
             break;
         }
         
