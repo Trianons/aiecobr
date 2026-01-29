@@ -157,12 +157,12 @@ export default function BiomeMapCanvas() {
         "x": 0.3973821989528796,
         "y": 0.5866382890365448
       },
-      "regionRadius": 0.18,
-      "movementPattern": "wave",
+      "regionRadius": 0.35,
+      "movementPattern": "flow",
       "movementSpeed": 0.0036,
       "chaos": 1,
-      "weight": 1.5,
-      "egoForce": 2.4,
+      "weight": 1.3,
+      "egoForce": 4.6,
       "isMutant": true,
       "colorCycle": [
         "#009B3A",
