@@ -290,6 +290,23 @@ export default function BiomeMapCanvas() {
         // Color mixing
         let targetColor = hexToRgb(primaryBiome.color);
         
+        // Ser Humano: COR MUTANTE - muda ciclicamente
+        if (primaryBiome.isMutant && primaryBiome.colorCycle) {
+          const cycleSpeed = 0.5; // Velocidade do ciclo de cores
+          const cycleIndex = Math.floor((time * cycleSpeed + particle.phaseOffset) % primaryBiome.colorCycle.length);
+          const nextIndex = (cycleIndex + 1) % primaryBiome.colorCycle.length;
+          const cycleProgress = ((time * cycleSpeed + particle.phaseOffset) % 1);
+          
+          const color1 = hexToRgb(primaryBiome.colorCycle[cycleIndex]);
+          const color2 = hexToRgb(primaryBiome.colorCycle[nextIndex]);
+          
+          targetColor = {
+            r: color1.r * (1 - cycleProgress) + color2.r * cycleProgress,
+            g: color1.g * (1 - cycleProgress) + color2.g * cycleProgress,
+            b: color1.b * (1 - cycleProgress) + color2.b * cycleProgress
+          };
+        }
+        
         if (secondaryBiome && influences[1].dist < 0.2) {
           const mixFactor = (0.2 - influences[1].dist) / 0.2 * 0.4;
           const secondaryColor = hexToRgb(secondaryBiome.color);
