@@ -94,7 +94,7 @@ export default function BiomeMapCanvas() {
       movementSpeed: 0.0006,
       chaos: 0.5,
       weight: 2.5,
-      repelForce: 0.5,
+      attractionForce: 1.2, // Força de atração ao invés de repulsão
       link: 'https://ai.eco.br/'
     },
     { 
@@ -353,18 +353,9 @@ export default function BiomeMapCanvas() {
             const spiralRadius = 0.15 + Math.sin(time * 0.5 + particle.phaseOffset) * 0.05;
             const spiralX = primaryBiome.position.x + Math.cos(particle.angle) * spiralRadius;
             const spiralY = primaryBiome.position.y + Math.sin(particle.angle) * spiralRadius;
-            const spiralForce = 0.0002;
+            const spiralForce = (primaryBiome.attractionForce || 1.0) * 0.0002;
             particle.vx += (spiralX - particle.x) * spiralForce;
             particle.vy += (spiralY - particle.y) * spiralForce;
-            
-            // Cultura: força de repulsão para dispersão
-            if (primaryBiome.repelForce) {
-              const repelDist = influences[0].dist;
-              if (repelDist < 0.08) { // Muito perto do centro
-                particle.vx += (influences[0].dx / repelDist) * 0.00005 * primaryBiome.repelForce;
-                particle.vy += (influences[0].dy / repelDist) * 0.00005 * primaryBiome.repelForce;
-              }
-            }
             break;
             
           case 'flow':
