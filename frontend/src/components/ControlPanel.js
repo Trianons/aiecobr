@@ -1,12 +1,50 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function ControlPanel({ biomes, onUpdate }) {
+export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCustomBiome, onRemoveCustomBiome }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBiome, setSelectedBiome] = useState(0);
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customForm, setCustomForm] = useState({
+    name: '',
+    link: '',
+    color: '#22d3ee',
+    positionX: 0.5,
+    positionY: 0.5
+  });
 
   const handleChange = (biomeName, property, value) => {
     onUpdate(biomeName, property, parseFloat(value));
+  };
+  
+  const handleTextChange = (biomeName, property, value) => {
+    onUpdate(biomeName, property, value);
+  };
+
+  const handleAddCustom = () => {
+    if (customForm.name && customForm.link) {
+      onAddCustomBiome({
+        name: customForm.name,
+        color: customForm.color,
+        accentColor: customForm.color,
+        position: { x: customForm.positionX, y: customForm.positionY },
+        link: customForm.link,
+        regionRadius: 0.15,
+        movementPattern: 'orbital',
+        movementSpeed: 0.001,
+        chaos: 0.5,
+        weight: 0.5,
+        isCustom: true
+      });
+      setCustomForm({
+        name: '',
+        link: '',
+        color: '#22d3ee',
+        positionX: 0.5,
+        positionY: 0.5
+      });
+      setShowCustomForm(false);
+    }
   };
 
   const currentBiome = biomes[selectedBiome];
@@ -85,8 +123,28 @@ export default function ControlPanel({ biomes, onUpdate }) {
                 <h3 className="text-lg font-bold text-white mb-2">
                   {currentBiome.name}
                 </h3>
-                <div className="text-xs text-white/60">
+                <div className="text-xs text-white/60 mb-2">
                   Padrão: {currentBiome.movementPattern}
+                </div>
+                
+                {/* Link Input */}
+                <div className="mt-3">
+                  <label className="block text-xs font-medium text-white/70 mb-1">
+                    Link (URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={currentBiome.link || ''}
+                    onChange={(e) => handleTextChange(currentBiome.name, 'link', e.target.value)}
+                    placeholder="https://exemplo.com"
+                    className="w-full px-3 py-1.5 text-xs rounded backdrop-blur-md border"
+                    style={{
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white'
+                    }}
+                    data-testid={`${currentBiome.name}-link-input`}
+                  />
                 </div>
               </div>
 
@@ -252,12 +310,170 @@ export default function ControlPanel({ biomes, onUpdate }) {
                 )}
               </div>
 
+              {/* Divider */}
+              <div className="my-6 h-px bg-white/10"></div>
+
+              {/* Custom Biome Section */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-white">
+                    Caixas Personalizadas
+                  </h3>
+                  <button
+                    onClick={() => setShowCustomForm(!showCustomForm)}
+                    className="px-3 py-1 text-xs rounded backdrop-blur-md border transition-all"
+                    style={{
+                      background: 'rgba(0, 155, 58, 0.2)',
+                      borderColor: 'rgba(0, 155, 58, 0.4)',
+                    }}
+                    data-testid="toggle-custom-form"
+                  >
+                    {showCustomForm ? 'Cancelar' : '+ Nova Caixa'}
+                  </button>
+                </div>
+
+                {/* Custom Form */}
+                {showCustomForm && (
+                  <div className="p-4 rounded-lg mb-4" style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-white/70 mb-1">Nome</label>
+                        <input
+                          type="text"
+                          value={customForm.name}
+                          onChange={(e) => setCustomForm({...customForm, name: e.target.value})}
+                          placeholder="Ex: Inovação"
+                          className="w-full px-3 py-2 text-sm rounded backdrop-blur-md border"
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.8)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: 'white'
+                          }}
+                          data-testid="custom-name-input"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-white/70 mb-1">Link (URL)</label>
+                        <input
+                          type="text"
+                          value={customForm.link}
+                          onChange={(e) => setCustomForm({...customForm, link: e.target.value})}
+                          placeholder="https://exemplo.com"
+                          className="w-full px-3 py-2 text-sm rounded backdrop-blur-md border"
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.8)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            color: 'white'
+                          }}
+                          data-testid="custom-link-input"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-white/70 mb-1">Cor</label>
+                        <input
+                          type="color"
+                          value={customForm.color}
+                          onChange={(e) => setCustomForm({...customForm, color: e.target.value})}
+                          className="w-full h-10 rounded cursor-pointer"
+                          data-testid="custom-color-input"
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-medium text-white/70 mb-1">Pos X</label>
+                          <input
+                            type="number"
+                            min="0.1"
+                            max="0.9"
+                            step="0.05"
+                            value={customForm.positionX}
+                            onChange={(e) => setCustomForm({...customForm, positionX: parseFloat(e.target.value)})}
+                            className="w-full px-2 py-1.5 text-sm rounded backdrop-blur-md border"
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.8)',
+                              borderColor: 'rgba(255, 255, 255, 0.2)',
+                              color: 'white'
+                            }}
+                            data-testid="custom-position-x"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-white/70 mb-1">Pos Y</label>
+                          <input
+                            type="number"
+                            min="0.1"
+                            max="0.9"
+                            step="0.05"
+                            value={customForm.positionY}
+                            onChange={(e) => setCustomForm({...customForm, positionY: parseFloat(e.target.value)})}
+                            className="w-full px-2 py-1.5 text-sm rounded backdrop-blur-md border"
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.8)',
+                              borderColor: 'rgba(255, 255, 255, 0.2)',
+                              color: 'white'
+                            }}
+                            data-testid="custom-position-y"
+                          />
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={handleAddCustom}
+                        className="w-full px-4 py-2 rounded-lg backdrop-blur-md border transition-all mt-3"
+                        style={{
+                          background: 'rgba(0, 155, 58, 0.3)',
+                          borderColor: 'rgba(0, 155, 58, 0.5)',
+                        }}
+                        data-testid="add-custom-biome"
+                      >
+                        <span className="text-white text-sm font-medium">Adicionar Caixa</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Custom Biomes List */}
+                {customBiomes.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-xs font-medium text-white/50 mb-2">
+                      Caixas Criadas ({customBiomes.length})
+                    </div>
+                    {customBiomes.map((custom, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 rounded backdrop-blur-md border"
+                        style={{
+                          background: 'rgba(15, 23, 42, 0.6)',
+                          borderColor: `${custom.color}40`,
+                        }}
+                      >
+                        <div>
+                          <div className="text-sm font-medium text-white">{custom.name}</div>
+                          <div className="text-xs text-white/50 truncate max-w-[200px]">{custom.link}</div>
+                        </div>
+                        <button
+                          onClick={() => onRemoveCustomBiome(index)}
+                          className="px-2 py-1 text-xs rounded text-red-400 hover:bg-red-500/20"
+                          data-testid={`remove-custom-${index}`}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Export Config Button */}
               <button
                 onClick={() => {
-                  const config = JSON.stringify(biomes, null, 2);
+                  const config = { biomes, customBiomes };
                   console.log('Current Configuration:', config);
-                  navigator.clipboard.writeText(config);
+                  navigator.clipboard.writeText(JSON.stringify(config, null, 2));
                   alert('Configuração copiada para clipboard!');
                 }}
                 className="w-full mt-6 px-4 py-3 rounded-lg backdrop-blur-md border transition-all duration-300"

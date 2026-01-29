@@ -91,7 +91,8 @@ export default function BiomeMapCanvas() {
       movementSpeed: 0.0006,
       chaos: 0.5,
       weight: 2.5,
-      repelForce: 0.5
+      repelForce: 0.5,
+      link: 'https://ai.eco.br/'
     },
     { 
       name: 'Negócios', 
@@ -103,7 +104,8 @@ export default function BiomeMapCanvas() {
       movementSpeed: 0.002,
       chaos: 0.5,
       weight: 0.6,
-      attractionForce: 1.2
+      attractionForce: 1.2,
+      link: 'https://aibrasil.com.br/'
     },
     { 
       name: 'Colaboração', 
@@ -115,7 +117,8 @@ export default function BiomeMapCanvas() {
       movementSpeed: 0.0011,
       chaos: 0.35,
       weight: 0.45,
-      attractionForce: 0.8
+      attractionForce: 0.8,
+      link: 'https://ai.eco.br/'
     },
     { 
       name: 'Reconhecimento', 
@@ -128,7 +131,8 @@ export default function BiomeMapCanvas() {
       chaos: 0.75,
       weight: 0.4,
       repelForce: 1.5,
-      flowThrough: true
+      flowThrough: true,
+      link: 'https://aibrasilexperience.com/'
     },
     { 
       name: 'Ser Humano', 
@@ -142,16 +146,24 @@ export default function BiomeMapCanvas() {
       weight: 1.0,
       egoForce: 2.5,
       isMutant: true,
-      colorCycle: ['#009B3A', '#0066CC', '#FFDF00', '#FFFFFF', '#00A859', '#ec4899', '#a78bfa', '#22d3ee']
+      colorCycle: ['#009B3A', '#0066CC', '#FFDF00', '#FFFFFF', '#00A859', '#ec4899', '#a78bfa', '#22d3ee'],
+      link: '' // Link customizável
     }
   ]);
   
-  const biomesRef = useRef(biomes);
+  const [customBiomes, setCustomBiomes] = useState([]);
   
-  // Atualizar ref quando biomes mudar
+  const biomesRef = useRef(biomes);
+  const customBiomesRef = useRef(customBiomes);
+  
+  // Atualizar refs quando mudar
   useEffect(() => {
     biomesRef.current = biomes;
   }, [biomes]);
+  
+  useEffect(() => {
+    customBiomesRef.current = customBiomes;
+  }, [customBiomes]);
   
   const handleBiomeUpdate = (biomeName, property, value) => {
     setBiomes(prevBiomes => 
@@ -172,6 +184,14 @@ export default function BiomeMapCanvas() {
         return biome;
       })
     );
+  };
+  
+  const handleAddCustomBiome = (customBiome) => {
+    setCustomBiomes(prev => [...prev, customBiome]);
+  };
+  
+  const handleRemoveCustomBiome = (index) => {
+    setCustomBiomes(prev => prev.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -506,7 +526,13 @@ export default function BiomeMapCanvas() {
         ))}
       </div>
       {/* Control Panel */}
-      <ControlPanel biomes={biomes} onUpdate={handleBiomeUpdate} />
+      <ControlPanel 
+        biomes={biomes} 
+        onUpdate={handleBiomeUpdate}
+        customBiomes={customBiomes}
+        onAddCustomBiome={handleAddCustomBiome}
+        onRemoveCustomBiome={handleRemoveCustomBiome}
+      />
       
       {/* Breathing gradient overlay */}
       <motion.div
