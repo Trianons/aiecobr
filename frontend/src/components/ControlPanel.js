@@ -190,9 +190,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 )}
               </div>
 
-              {/* Controls */}
+              {/* Controls - Ordenados por impacto visual */}
               <div className="space-y-5">
-                {/* Movement Pattern */}
+                {/* 1. Movement Pattern - MAIOR IMPACTO */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     <InfoTooltip text="Define o tipo de movimento das partículas deste bioma. Spiral = movimento em espiral circular. Flow = fluxo rápido e turbulento. Orbital = órbitas circulares suaves. Pulse = pulsação que expande/contrai. Wave = movimento ondulatório fluido." />
@@ -217,43 +217,7 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   </select>
                 </div>
 
-                {/* Movement Speed */}
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                    <InfoTooltip text="Controla a rapidez com que as partículas se movem. Valores maiores = movimento mais rápido e dinâmico. Valores menores = movimento mais lento e contemplativo." />
-                    <span className="ml-2">Velocidade: {(currentBiome.movementSpeed * 1000).toFixed(2)}</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="0.0001"
-                    max="0.005"
-                    step="0.0001"
-                    value={currentBiome.movementSpeed}
-                    onChange={(e) => handleChange(currentBiome.name, 'movementSpeed', e.target.value)}
-                    className="w-full"
-                    data-testid={`${currentBiome.name}-speed`}
-                  />
-                </div>
-
-                {/* Chaos */}
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                    <InfoTooltip text="Define o nível de aleatoriedade e imprevisibilidade do movimento. 0% = movimento muito ordenado e previsível. 100% = movimento totalmente caótico e imprevisível. Valores altos criam padrões orgânicos." />
-                    <span className="ml-2">Caos: {(currentBiome.chaos * 100).toFixed(0)}%</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value={currentBiome.chaos}
-                    onChange={(e) => handleChange(currentBiome.name, 'chaos', e.target.value)}
-                    className="w-full"
-                    data-testid={`${currentBiome.name}-chaos`}
-                  />
-                </div>
-
-                {/* Weight */}
+                {/* 2. Weight - ALTO IMPACTO */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     <InfoTooltip text="Determina quantas partículas orbitam este bioma. Valores maiores = mais partículas e maior presença visual. Exemplo: 2.5 = 2.5x mais partículas que o padrão. Afeta a distribuição proporcional entre todos os biomas." />
@@ -271,7 +235,43 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   />
                 </div>
 
-                {/* Region Radius */}
+                {/* 3. Movement Speed - MÉDIO-ALTO IMPACTO */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
+                    <InfoTooltip text="Controla a rapidez com que as partículas se movem. Valores maiores = movimento mais rápido e dinâmico. Valores menores = movimento mais lento e contemplativo." />
+                    <span className="ml-2">Velocidade: {(currentBiome.movementSpeed * 1000).toFixed(2)}</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0.0001"
+                    max="0.005"
+                    step="0.0001"
+                    value={currentBiome.movementSpeed}
+                    onChange={(e) => handleChange(currentBiome.name, 'movementSpeed', e.target.value)}
+                    className="w-full"
+                    data-testid={`${currentBiome.name}-speed`}
+                  />
+                </div>
+
+                {/* 4. Chaos - MÉDIO IMPACTO */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
+                    <InfoTooltip text="Define o nível de aleatoriedade e imprevisibilidade do movimento. 0% = movimento muito ordenado e previsível. 100% = movimento totalmente caótico e imprevisível. Valores altos criam padrões orgânicos." />
+                    <span className="ml-2">Caos: {(currentBiome.chaos * 100).toFixed(0)}%</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={currentBiome.chaos}
+                    onChange={(e) => handleChange(currentBiome.name, 'chaos', e.target.value)}
+                    className="w-full"
+                    data-testid={`${currentBiome.name}-chaos`}
+                  />
+                </div>
+
+                {/* 5. Region Radius - MÉDIO IMPACTO */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     <InfoTooltip text="Define o tamanho da área de influência do bioma. Valores maiores = partículas se espalham mais longe do centro. Valores menores = partículas ficam mais concentradas e próximas. Afeta o padrão visual de dispersão." />
@@ -289,7 +289,27 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   />
                 </div>
 
-                {/* Attraction Force (if exists) */}
+                {/* 6. Ego Force - ALTO IMPACTO (apenas Ser Humano) */}
+                {currentBiome.egoForce !== undefined && (
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
+                      <InfoTooltip text="Força especial do Ser Humano que influencia TODAS as partículas próximas (raio de 40% da tela), independente do bioma de origem. Representa o ego individual que atrai, desvia e causa caos no movimento de todas as partículas. Valores altos criam um centro magnético caótico." />
+                      <span className="ml-2">Força do Ego: {currentBiome.egoForce.toFixed(2)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="5"
+                      step="0.1"
+                      value={currentBiome.egoForce}
+                      onChange={(e) => handleChange(currentBiome.name, 'egoForce', e.target.value)}
+                      className="w-full"
+                      data-testid={`${currentBiome.name}-ego`}
+                    />
+                  </div>
+                )}
+
+                {/* 7. Attraction Force - MÉDIO-BAIXO IMPACTO */}
                 {currentBiome.attractionForce !== undefined && (
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
@@ -309,7 +329,7 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   </div>
                 )}
 
-                {/* Repel Force (if exists) */}
+                {/* 8. Repel Force - BAIXO IMPACTO */}
                 {currentBiome.repelForce !== undefined && (
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
@@ -325,26 +345,6 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                       onChange={(e) => handleChange(currentBiome.name, 'repelForce', e.target.value)}
                       className="w-full"
                       data-testid={`${currentBiome.name}-repel`}
-                    />
-                  </div>
-                )}
-
-                {/* Ego Force (if exists) */}
-                {currentBiome.egoForce !== undefined && (
-                  <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                      <InfoTooltip text="Força especial do Ser Humano que influencia TODAS as partículas próximas (raio de 40% da tela), independente do bioma de origem. Representa o ego individual que atrai, desvia e causa caos no movimento de todas as partículas. Valores altos criam um centro magnético caótico." />
-                      <span className="ml-2">Força do Ego: {currentBiome.egoForce.toFixed(2)}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="5"
-                      step="0.1"
-                      value={currentBiome.egoForce}
-                      onChange={(e) => handleChange(currentBiome.name, 'egoForce', e.target.value)}
-                      className="w-full"
-                      data-testid={`${currentBiome.name}-ego`}
                     />
                   </div>
                 )}
