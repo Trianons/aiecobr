@@ -80,6 +80,7 @@ export default function BiomeMapCanvas() {
   const animationRef = useRef(null);
   const [dragging, setDragging] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = useState(false); // Rastrear se houve movimento
   
   // Estado reativo para os biomas
   const [biomes, setBiomes] = useState([
@@ -219,6 +220,8 @@ export default function BiomeMapCanvas() {
       
       // Handle drag
       if (dragging) {
+        setHasMoved(true); // Marca que houve movimento
+        
         const newX = (e.clientX - dragOffset.x) / window.innerWidth;
         const newY = (e.clientY - dragOffset.y) / window.innerHeight;
         
@@ -244,6 +247,8 @@ export default function BiomeMapCanvas() {
     const handleGlobalMouseUp = () => {
       if (dragging) {
         setDragging(null);
+        // Resetar hasMoved após um pequeno delay para permitir onClick detectar
+        setTimeout(() => setHasMoved(false), 50);
       }
     };
     
@@ -575,6 +580,7 @@ export default function BiomeMapCanvas() {
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
                 
+                setHasMoved(false); // Resetar flag de movimento
                 setDragging({ type: 'biome', index });
                 setDragOffset({
                   x: e.clientX - centerX,
@@ -583,8 +589,8 @@ export default function BiomeMapCanvas() {
                 e.preventDefault();
               }}
               onClick={(e) => {
-                // Se não houve drag (dragging null), abre link
-                if (!dragging && biome.link) {
+                // Só abre link se NÃO houve movimento (click rápido)
+                if (!hasMoved && biome.link) {
                   window.open(biome.link, '_blank');
                 }
                 e.preventDefault();
@@ -638,6 +644,7 @@ export default function BiomeMapCanvas() {
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
                 
+                setHasMoved(false); // Resetar flag
                 setDragging({ type: 'custom', index });
                 setDragOffset({
                   x: e.clientX - centerX,
@@ -646,7 +653,8 @@ export default function BiomeMapCanvas() {
                 e.preventDefault();
               }}
               onClick={(e) => {
-                if (!dragging && biome.link) {
+                // Só abre link se NÃO houve movimento
+                if (!hasMoved && biome.link) {
                   window.open(biome.link, '_blank');
                 }
                 e.preventDefault();
