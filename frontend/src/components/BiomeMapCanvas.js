@@ -52,7 +52,7 @@ const BIOMES = [
     name: 'Ser Humano', 
     color: '#00A859',
     accentColor: '#00D966',
-    position: { x: 0.5, y: 0.75 }, // Centro da base, entre Cultura e Colaboração
+    position: { x: 0.5, y: 0.58 }, // Centro equidistante entre Reconhecimento, Cultura e Colaboração
     regionRadius: 0.16,
     movementPattern: 'wave',
     movementSpeed: 0.001,
