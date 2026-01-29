@@ -140,6 +140,20 @@ export default function BiomeMapCanvas() {
         const primaryBiome = influences[0].biome;
         const secondaryBiome = influences[1].biome;
         
+        // Sistema de atração cruzada para fluxo entre biomas
+        BIOMES.forEach(attractorBiome => {
+          if (attractorBiome.attracts && attractorBiome.attracts.includes(primaryBiome.name)) {
+            const dx = attractorBiome.position.x - particle.x;
+            const dy = attractorBiome.position.y - particle.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            // Força de atração cruzada
+            const crossAttractionForce = 0.00015;
+            particle.vx += (dx / dist) * crossAttractionForce;
+            particle.vy += (dy / dist) * crossAttractionForce;
+          }
+        });
+        
         // Apply movement patterns
         switch(primaryBiome.movementPattern) {
           case 'spiral':
