@@ -197,7 +197,6 @@ export default function BiomeMapCanvas() {
   };
   
   const handleDragStart = (type, index, e) => {
-    e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -240,24 +239,49 @@ export default function BiomeMapCanvas() {
   
   // Mouse move e drag listeners
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleGlobalMouseMove = (e) => {
+      // Atualizar mouse ref
       mouseRef.current = {
         x: e.clientX / window.innerWidth,
         y: e.clientY / window.innerHeight
       };
-      handleDragMove(e);
+      
+      // Handle drag
+      if (dragging) {
+        const newX = (e.clientX - dragOffset.x) / window.innerWidth;
+        const newY = (e.clientY - dragOffset.y) / window.innerHeight;
+        
+        const clampedX = Math.max(0.1, Math.min(0.9, newX));
+        const clampedY = Math.max(0.1, Math.min(0.9, newY));
+        
+        if (dragging.type === 'biome') {
+          setBiomes(prev => prev.map((biome, i) => 
+            i === dragging.index 
+              ? { ...biome, position: { x: clampedX, y: clampedY } }
+              : biome
+          ));
+        } else if (dragging.type === 'custom') {
+          setCustomBiomes(prev => prev.map((biome, i) => 
+            i === dragging.index 
+              ? { ...biome, position: { x: clampedX, y: clampedY } }
+              : biome
+          ));
+        }
+      }
     };
     
-    const handleMouseUp = () => {
-      handleDragEnd();
+    const handleGlobalMouseUp = () => {
+      if (dragging) {
+        setDragging(null);
+      }
     };
     
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleGlobalMouseMove);
+    window.addEventListener('mouseup', handleGlobalMouseUp);
     
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleGlobalMouseMove);
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
     };
   }, [dragging, dragOffset]);
 
