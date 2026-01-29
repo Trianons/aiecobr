@@ -78,6 +78,8 @@ export default function BiomeMapCanvas() {
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const animationRef = useRef(null);
+  const [dragging, setDragging] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   
   // Estado reativo para os biomas
   const [biomes, setBiomes] = useState([
@@ -193,6 +195,71 @@ export default function BiomeMapCanvas() {
   const handleRemoveCustomBiome = (index) => {
     setCustomBiomes(prev => prev.filter((_, i) => i !== index));
   };
+  
+  const handleDragStart = (type, index, e) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    setDragging({ type, index });
+    setDragOffset({
+      x: e.clientX - centerX,
+      y: e.clientY - centerY
+    });
+  };
+  
+  const handleDragMove = (e) => {
+    if (!dragging) return;
+    
+    const newX = (e.clientX - dragOffset.x) / window.innerWidth;
+    const newY = (e.clientY - dragOffset.y) / window.innerHeight;
+    
+    // Limitar aos bounds da tela
+    const clampedX = Math.max(0.1, Math.min(0.9, newX));
+    const clampedY = Math.max(0.1, Math.min(0.9, newY));
+    
+    if (dragging.type === 'biome') {
+      setBiomes(prev => prev.map((biome, i) => 
+        i === dragging.index 
+          ? { ...biome, position: { x: clampedX, y: clampedY } }
+          : biome
+      ));
+    } else if (dragging.type === 'custom') {
+      setCustomBiomes(prev => prev.map((biome, i) => 
+        i === dragging.index 
+          ? { ...biome, position: { x: clampedX, y: clampedY } }
+          : biome
+      ));
+    }
+  };
+  
+  const handleDragEnd = () => {
+    setDragging(null);
+  };
+  
+  // Mouse move e drag listeners
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mouseRef.current = {
+        x: e.clientX / window.innerWidth,
+        y: e.clientY / window.innerHeight
+      };
+      handleDragMove(e);
+    };
+    
+    const handleMouseUp = () => {
+      handleDragEnd();
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [dragging, dragOffset]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
