@@ -1,5 +1,44 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Info } from 'lucide-react';
+
+// Componente de Tooltip Informativo
+function InfoTooltip({ text }) {
+  const [show, setShow] = useState(false);
+  
+  return (
+    <div className="relative inline-block ml-2">
+      <div
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        className="cursor-help"
+      >
+        <Info size={16} className="text-white/50 hover:text-white/80 transition-colors" />
+      </div>
+      
+      <AnimatePresence>
+        {show && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.2 }}
+            className="absolute left-6 top-0 w-64 p-3 rounded-lg backdrop-blur-xl border z-50 pointer-events-none"
+            style={{
+              background: 'rgba(15, 23, 42, 0.95)',
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)'
+            }}
+          >
+            <p className="text-xs text-white/90 leading-relaxed">
+              {text}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCustomBiome, onRemoveCustomBiome }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -129,8 +168,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 
                 {/* Link Input */}
                 <div className="mt-3">
-                  <label className="block text-xs font-medium text-white/70 mb-1">
+                  <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
                     Link (URL)
+                    <InfoTooltip text="URL que será aberta ao clicar rapidamente na caixa do bioma (sem arrastar). Links externos devem começar com https://" />
                   </label>
                   <input
                     type="text"
@@ -152,8 +192,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
               <div className="space-y-5">
                 {/* Movement Speed */}
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     Velocidade: {(currentBiome.movementSpeed * 1000).toFixed(2)}
+                    <InfoTooltip text="Controla a rapidez com que as partículas se movem. Valores maiores = movimento mais rápido e dinâmico. Valores menores = movimento mais lento e contemplativo." />
                   </label>
                   <input
                     type="range"
@@ -169,8 +210,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
 
                 {/* Chaos */}
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     Caos: {(currentBiome.chaos * 100).toFixed(0)}%
+                    <InfoTooltip text="Define o nível de aleatoriedade e imprevisibilidade do movimento. 0% = movimento muito ordenado e previsível. 100% = movimento totalmente caótico e imprevisível. Valores altos criam padrões orgânicos." />
                   </label>
                   <input
                     type="range"
@@ -186,8 +228,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
 
                 {/* Weight */}
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     Densidade (Weight): {currentBiome.weight.toFixed(2)}
+                    <InfoTooltip text="Determina quantas partículas orbitam este bioma. Valores maiores = mais partículas e maior presença visual. Exemplo: 2.5 = 2.5x mais partículas que o padrão. Afeta a distribuição proporcional entre todos os biomas." />
                   </label>
                   <input
                     type="range"
@@ -203,8 +246,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
 
                 {/* Region Radius */}
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                     Raio da Região: {currentBiome.regionRadius.toFixed(2)}
+                    <InfoTooltip text="Define o tamanho da área de influência do bioma. Valores maiores = partículas se espalham mais longe do centro. Valores menores = partículas ficam mais concentradas e próximas. Afeta o padrão visual de dispersão." />
                   </label>
                   <input
                     type="range"
@@ -221,8 +265,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Attraction Force (if exists) */}
                 {currentBiome.attractionForce !== undefined && (
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
+                    <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                       Força de Atração: {currentBiome.attractionForce.toFixed(2)}
+                      <InfoTooltip text="Intensidade com que este bioma puxa partículas em sua direção. Valores maiores = atração mais forte e partículas mais concentradas. Use com cuidado: valores muito altos podem criar acúmulo excessivo." />
                     </label>
                     <input
                       type="range"
@@ -240,8 +285,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Repel Force (if exists) */}
                 {currentBiome.repelForce !== undefined && (
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
+                    <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                       Força de Repulsão: {currentBiome.repelForce.toFixed(2)}
+                      <InfoTooltip text="Intensidade com que este bioma empurra partículas para longe quando ficam muito próximas. Cria efeito de fluxo perene - partículas circulam mas não acumulam. Essencial para biomas como Reconhecimento que devem manter equilíbrio." />
                     </label>
                     <input
                       type="range"
@@ -259,8 +305,9 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Ego Force (if exists) */}
                 {currentBiome.egoForce !== undefined && (
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
+                    <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
                       Força do Ego: {currentBiome.egoForce.toFixed(2)}
+                      <InfoTooltip text="Força especial do Ser Humano que influencia TODAS as partículas próximas (raio de 40% da tela), independente do bioma de origem. Representa o ego individual que atrai, desvia e causa caos no movimento de todas as partículas. Valores altos criam um centro magnético caótico." />
                     </label>
                     <input
                       type="range"
