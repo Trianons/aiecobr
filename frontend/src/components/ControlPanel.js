@@ -40,7 +40,7 @@ function InfoTooltip({ text }) {
   );
 }
 
-export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCustomBiome, onRemoveCustomBiome }) {
+export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCustomBiome, onRemoveCustomBiome, onCopyURL }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBiome, setSelectedBiome] = useState(0);
   const [showCustomForm, setShowCustomForm] = useState(false);
@@ -356,7 +356,7 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   const config = { biomes, customBiomes };
                   console.log('Current Configuration:', config);
                   navigator.clipboard.writeText(JSON.stringify(config, null, 2));
-                  alert('Configuração copiada para clipboard!');
+                  alert('Configuração JSON copiada para clipboard!');
                 }}
                 className="w-full mt-6 px-4 py-3 rounded-lg backdrop-blur-md border transition-all duration-300"
                 style={{
@@ -366,7 +366,27 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 data-testid="export-config"
               >
                 <span className="text-white text-sm font-medium">
-                  📋 Copiar Configuração
+                  📋 Copiar JSON
+                </span>
+              </button>
+              
+              {/* Share URL Button */}
+              <button
+                onClick={() => {
+                  if (onCopyURL) {
+                    onCopyURL();
+                    alert('🔗 URL compartilhável copiada!\n\nCole em outra aba para abrir com a mesma configuração.');
+                  }
+                }}
+                className="w-full mt-3 px-4 py-3 rounded-lg backdrop-blur-md border transition-all duration-300"
+                style={{
+                  background: 'rgba(34, 211, 238, 0.2)',
+                  borderColor: 'rgba(34, 211, 238, 0.4)',
+                }}
+                data-testid="share-url"
+              >
+                <span className="text-white text-sm font-medium">
+                  🔗 Copiar URL Compartilhável
                 </span>
               </button>
             </div>

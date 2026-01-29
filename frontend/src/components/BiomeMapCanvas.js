@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ControlPanel from './ControlPanel';
+import { useURLState } from '../utils/urlState';
 
 // 5 Biomas brasileiros - Disposição em pirâmide ajustada
 const BIOMES = [
@@ -81,6 +82,78 @@ export default function BiomeMapCanvas() {
   const [dragging, setDragging] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false); // Rastrear se houve movimento
+  
+  // Configuração padrão (para fallback)
+  const defaultBiomes = [
+    {
+      "name": "Cultura",
+      "color": "#009B3A",
+      "accentColor": "#00C853",
+      "position": { "x": 0.2636125654450262, "y": 0.6746781561461794 },
+      "regionRadius": 0.17,
+      "movementPattern": "spiral",
+      "movementSpeed": 0.0016,
+      "chaos": 0.5,
+      "weight": 1.4,
+      "attractionForce": 1.1,
+      "link": "https://ai.eco.br/"
+    },
+    {
+      "name": "Negócios",
+      "color": "#0066CC",
+      "accentColor": "#3399FF",
+      "position": { "x": 0.5060209424083769, "y": 0.3538205980066445 },
+      "regionRadius": 0.33,
+      "movementPattern": "flow",
+      "movementSpeed": 0.002,
+      "chaos": 0.5,
+      "weight": 1.1,
+      "attractionForce": 1,
+      "link": "https://aibrasil.com.br/"
+    },
+    {
+      "name": "Colaboração",
+      "color": "#FFDF00",
+      "accentColor": "#FFE44D",
+      "position": { "x": 0.6358638743455497, "y": 0.7643964562569213 },
+      "regionRadius": 0.18,
+      "movementPattern": "orbital",
+      "movementSpeed": 0.0011,
+      "chaos": 0.35,
+      "weight": 1.1,
+      "attractionForce": 0.8,
+      "link": "https://ai.eco.br/"
+    },
+    {
+      "name": "Reconhecimento",
+      "color": "#FFFFFF",
+      "accentColor": "#E8E8E8",
+      "position": { "x": 0.3931937172774869, "y": 0.18023255813953487 },
+      "regionRadius": 0.16,
+      "movementPattern": "spiral",
+      "movementSpeed": 0.002,
+      "chaos": 0.85,
+      "weight": 1.3,
+      "repelForce": 0.6,
+      "flowThrough": true,
+      "link": "https://aibrasilexperience.com/"
+    },
+    {
+      "name": "Ser Humano",
+      "color": "#00A859",
+      "accentColor": "#00D966",
+      "position": { "x": 0.3973821989528796, "y": 0.5866382890365448 },
+      "regionRadius": 0.35,
+      "movementPattern": "flow",
+      "movementSpeed": 0.0036,
+      "chaos": 1,
+      "weight": 1.3,
+      "egoForce": 4.6,
+      "isMutant": true,
+      "colorCycle": ["#009B3A", "#0066CC", "#FFDF00", "#FFFFFF", "#00A859", "#ec4899", "#a78bfa", "#22d3ee"],
+      "link": ""
+    }
+  ];
   
   // Estado reativo para os biomas - Configuração otimizada
   const [biomes, setBiomes] = useState([
@@ -179,6 +252,9 @@ export default function BiomeMapCanvas() {
   ]);
   
   const [customBiomes, setCustomBiomes] = useState([]);
+  
+  // URL State Persistence
+  const { copyURL } = useURLState(biomes, setBiomes, defaultBiomes);
   
   const biomesRef = useRef(biomes);
   const customBiomesRef = useRef(customBiomes);
@@ -710,6 +786,7 @@ export default function BiomeMapCanvas() {
         customBiomes={customBiomes}
         onAddCustomBiome={handleAddCustomBiome}
         onRemoveCustomBiome={handleRemoveCustomBiome}
+        onCopyURL={copyURL}
       />
       
       {/* Breathing gradient overlay */}
