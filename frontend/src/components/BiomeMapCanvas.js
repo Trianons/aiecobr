@@ -212,6 +212,13 @@ export default function BiomeMapCanvas() {
             const pulseForce = 0.0001 * (0.5 + pulseFactor);
             particle.vx += (-pulseDx / pulseDist) * pulseForce;
             particle.vy += (-pulseDy / pulseDist) * pulseForce;
+            
+            // Reconhecimento: força de repulsão para evitar acúmulo
+            if (primaryBiome.repelForce && pulseDist < 0.06) {
+              // Repele quando muito próximo
+              particle.vx += (pulseDx / pulseDist) * 0.0001 * primaryBiome.repelForce;
+              particle.vy += (pulseDy / pulseDist) * 0.0001 * primaryBiome.repelForce;
+            }
             break;
             
           case 'wave':
