@@ -208,35 +208,6 @@ export default function BiomeMapCanvas() {
     });
   };
   
-  const handleDragMove = (e) => {
-    if (!dragging) return;
-    
-    const newX = (e.clientX - dragOffset.x) / window.innerWidth;
-    const newY = (e.clientY - dragOffset.y) / window.innerHeight;
-    
-    // Limitar aos bounds da tela
-    const clampedX = Math.max(0.1, Math.min(0.9, newX));
-    const clampedY = Math.max(0.1, Math.min(0.9, newY));
-    
-    if (dragging.type === 'biome') {
-      setBiomes(prev => prev.map((biome, i) => 
-        i === dragging.index 
-          ? { ...biome, position: { x: clampedX, y: clampedY } }
-          : biome
-      ));
-    } else if (dragging.type === 'custom') {
-      setCustomBiomes(prev => prev.map((biome, i) => 
-        i === dragging.index 
-          ? { ...biome, position: { x: clampedX, y: clampedY } }
-          : biome
-      ));
-    }
-  };
-  
-  const handleDragEnd = () => {
-    setDragging(null);
-  };
-  
   // Mouse move e drag listeners
   useEffect(() => {
     const handleGlobalMouseMove = (e) => {
