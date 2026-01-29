@@ -19,11 +19,12 @@ const BIOMES = [
     color: '#0066CC',
     accentColor: '#3399FF',
     position: { x: 0.65, y: 0.5 }, // Entre Reconhecimento e Colaboração
-    regionRadius: 0.18,
+    regionRadius: 0.15, // Reduzir raio para mais concentração
     movementPattern: 'flow',
-    movementSpeed: 0.0015,
-    chaos: 0.7,
-    weight: 1.4
+    movementSpeed: 0.002, // Aumentar velocidade (era 0.0015)
+    chaos: 0.5, // Reduzir caos para mais concentração (era 0.7)
+    weight: 1.4,
+    attractionForce: 1.8 // Nova força de atração mais forte
   },
   { 
     name: 'Colaboração', 
@@ -154,8 +155,10 @@ export default function BiomeMapCanvas() {
             const flowDx = influences[0].dx;
             const flowDy = influences[0].dy;
             const flowDist = influences[0].dist;
-            particle.vx += (-flowDx / flowDist) * 0.00015 * (1 + Math.sin(time * 3 + i) * 0.5);
-            particle.vy += (-flowDy / flowDist) * 0.00015 * (1 + Math.cos(time * 3 + i) * 0.5);
+            // Usar força personalizada se disponível, senão usar padrão
+            const flowForce = primaryBiome.attractionForce || 1.0;
+            particle.vx += (-flowDx / flowDist) * 0.00015 * flowForce * (1 + Math.sin(time * 3 + i) * 0.5);
+            particle.vy += (-flowDy / flowDist) * 0.00015 * flowForce * (1 + Math.cos(time * 3 + i) * 0.5);
             particle.vx += Math.sin(time * 2 + i * 0.5) * 0.0003;
             particle.vy += Math.cos(time * 2.5 + i * 0.5) * 0.0003;
             break;
