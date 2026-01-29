@@ -166,26 +166,28 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   Padrão: {currentBiome.movementPattern}
                 </div>
                 
-                {/* Link Input */}
-                <div className="mt-3">
-                  <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
-                    <InfoTooltip text="URL que será aberta ao clicar rapidamente na caixa do bioma (sem arrastar). Links externos devem começar com https://" />
-                    <span className="ml-2">Link (URL)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={currentBiome.link || ''}
-                    onChange={(e) => handleTextChange(currentBiome.name, 'link', e.target.value)}
-                    placeholder="https://exemplo.com"
-                    className="w-full px-3 py-1.5 text-xs rounded backdrop-blur-md border"
-                    style={{
-                      background: 'rgba(15, 23, 42, 0.8)',
-                      borderColor: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white'
-                    }}
-                    data-testid={`${currentBiome.name}-link-input`}
-                  />
-                </div>
+                {/* Link Input - Apenas para Cultura e Ser Humano */}
+                {(currentBiome.name === 'Cultura' || currentBiome.name === 'Ser Humano') && (
+                  <div className="mt-3">
+                    <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
+                      <InfoTooltip text="URL que será aberta ao clicar rapidamente na caixa do bioma (sem arrastar). Links externos devem começar com https://" />
+                      <span className="ml-2">Link (URL)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={currentBiome.link || ''}
+                      onChange={(e) => handleTextChange(currentBiome.name, 'link', e.target.value)}
+                      placeholder="https://exemplo.com"
+                      className="w-full px-3 py-1.5 text-xs rounded backdrop-blur-md border"
+                      style={{
+                        background: 'rgba(15, 23, 42, 0.8)',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white'
+                      }}
+                      data-testid={`${currentBiome.name}-link-input`}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Controls */}
