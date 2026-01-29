@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import ControlPanel from './ControlPanel';
 
 // 5 Biomas brasileiros - Disposição em pirâmide ajustada
 const BIOMES = [
@@ -77,6 +78,101 @@ export default function BiomeMapCanvas() {
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const animationRef = useRef(null);
+  
+  // Estado reativo para os biomas
+  const [biomes, setBiomes] = useState([
+    { 
+      name: 'Cultura', 
+      color: '#009B3A',
+      accentColor: '#00C853',
+      position: { x: 0.25, y: 0.75 },
+      regionRadius: 0.25,
+      movementPattern: 'spiral',
+      movementSpeed: 0.0006,
+      chaos: 0.5,
+      weight: 2.5,
+      repelForce: 0.5
+    },
+    { 
+      name: 'Negócios', 
+      color: '#0066CC',
+      accentColor: '#3399FF',
+      position: { x: 0.65, y: 0.5 },
+      regionRadius: 0.15,
+      movementPattern: 'flow',
+      movementSpeed: 0.002,
+      chaos: 0.5,
+      weight: 0.6,
+      attractionForce: 1.2
+    },
+    { 
+      name: 'Colaboração', 
+      color: '#FFDF00',
+      accentColor: '#FFE44D',
+      position: { x: 0.75, y: 0.75 },
+      regionRadius: 0.18,
+      movementPattern: 'orbital',
+      movementSpeed: 0.0011,
+      chaos: 0.35,
+      weight: 0.45,
+      attractionForce: 0.8
+    },
+    { 
+      name: 'Reconhecimento', 
+      color: '#FFFFFF',
+      accentColor: '#E8E8E8',
+      position: { x: 0.5, y: 0.25 },
+      regionRadius: 0.22,
+      movementPattern: 'pulse',
+      movementSpeed: 0.0020,
+      chaos: 0.75,
+      weight: 0.4,
+      repelForce: 1.5,
+      flowThrough: true
+    },
+    { 
+      name: 'Ser Humano', 
+      color: '#00A859',
+      accentColor: '#00D966',
+      position: { x: 0.5, y: 0.58 },
+      regionRadius: 0.18,
+      movementPattern: 'wave',
+      movementSpeed: 0.0014,
+      chaos: 0.95,
+      weight: 1.0,
+      egoForce: 2.5,
+      isMutant: true,
+      colorCycle: ['#009B3A', '#0066CC', '#FFDF00', '#FFFFFF', '#00A859', '#ec4899', '#a78bfa', '#22d3ee']
+    }
+  ]);
+  
+  const biomesRef = useRef(biomes);
+  
+  // Atualizar ref quando biomes mudar
+  useEffect(() => {
+    biomesRef.current = biomes;
+  }, [biomes]);
+  
+  const handleBiomeUpdate = (biomeName, property, value) => {
+    setBiomes(prevBiomes => 
+      prevBiomes.map(biome => {
+        if (biome.name === biomeName) {
+          if (property.includes('.')) {
+            const [parent, child] = property.split('.');
+            return {
+              ...biome,
+              [parent]: {
+                ...biome[parent],
+                [child]: value
+              }
+            };
+          }
+          return { ...biome, [property]: value };
+        }
+        return biome;
+      })
+    );
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -92,12 +188,12 @@ export default function BiomeMapCanvas() {
 
     // Initialize particles com distribuição ponderada
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => {
-      // Weighted random selection
-      const totalWeight = BIOMES.reduce((sum, b) => sum + b.weight, 0);
+      const currentBiomes = biomesRef.current;
+      const totalWeight = currentBiomes.reduce((sum, b) => sum + b.weight, 0);
       let random = Math.random() * totalWeight;
-      let biome = BIOMES[0];
+      let biome = currentBiomes[0];
       
-      for (const b of BIOMES) {
+      for (const b of currentBiomes) {
         random -= b.weight;
         if (random <= 0) {
           biome = b;
@@ -130,7 +226,8 @@ export default function BiomeMapCanvas() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((particle, i) => {
-        const influences = BIOMES.map(biome => {
+        const currentBiomes = biomesRef.current;
+        const influences = currentBiomes.map(biome => {
           const dx = particle.x - biome.position.x;
           const dy = particle.y - biome.position.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -141,7 +238,7 @@ export default function BiomeMapCanvas() {
         const secondaryBiome = influences[1].biome;
         
         // FORÇA DO EGO - Ser Humano sempre influencia TODAS as partículas próximas
-        const serHumanoBiome = BIOMES.find(b => b.name === 'Ser Humano');
+        const serHumanoBiome = currentBiomes.find(b => b.name === 'Ser Humano');
         if (serHumanoBiome) {
           const dx = particle.x - serHumanoBiome.position.x;
           const dy = particle.y - serHumanoBiome.position.y;
@@ -224,7 +321,7 @@ export default function BiomeMapCanvas() {
                 particle.vy += (pulseDy / pulseDist) * 0.0002 * repelStrength * primaryBiome.repelForce;
                 
                 // Empurra para outros biomas aleatoriamente
-                const targetBiome = BIOMES[Math.floor(Math.random() * BIOMES.length)];
+                const targetBiome = currentBiomes[Math.floor(Math.random() * currentBiomes.length)];
                 const redirectDx = targetBiome.position.x - particle.x;
                 const redirectDy = targetBiome.position.y - particle.y;
                 const redirectDist = Math.sqrt(redirectDx * redirectDx + redirectDy * redirectDy);
@@ -408,6 +505,8 @@ export default function BiomeMapCanvas() {
           </div>
         ))}
       </div>
+      {/* Control Panel */}
+      <ControlPanel biomes={biomes} onUpdate={handleBiomeUpdate} />
       
       {/* Breathing gradient overlay */}
       <motion.div
