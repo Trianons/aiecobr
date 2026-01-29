@@ -190,6 +190,31 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
 
               {/* Controls */}
               <div className="space-y-5">
+                {/* Movement Pattern */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
+                    <InfoTooltip text="Define o tipo de movimento das partículas deste bioma. Spiral = movimento em espiral circular. Flow = fluxo rápido e turbulento. Orbital = órbitas circulares suaves. Pulse = pulsação que expande/contrai. Wave = movimento ondulatório fluido." />
+                    <span className="ml-2">Padrão de Movimento</span>
+                  </label>
+                  <select
+                    value={currentBiome.movementPattern}
+                    onChange={(e) => handleTextChange(currentBiome.name, 'movementPattern', e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg backdrop-blur-md border"
+                    style={{
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white'
+                    }}
+                    data-testid={`${currentBiome.name}-pattern`}
+                  >
+                    <option value="spiral">🌀 Spiral (Espiral)</option>
+                    <option value="flow">💨 Flow (Fluxo)</option>
+                    <option value="orbital">🔄 Orbital (Órbita)</option>
+                    <option value="pulse">💓 Pulse (Pulsação)</option>
+                    <option value="wave">🌊 Wave (Onda)</option>
+                  </select>
+                </div>
+
                 {/* Movement Speed */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
