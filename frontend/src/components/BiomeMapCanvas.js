@@ -553,52 +553,55 @@ export default function BiomeMapCanvas() {
         className="absolute inset-0"
       />
       
-      {/* Biome Labels - com links */}
+      {/* Biome Labels - com drag & drop e links */}
       <div className="absolute inset-0 pointer-events-none">
-        {biomes.map((biome) => (
-          <div
-            key={biome.name}
-            className="absolute"
-            style={{
-              left: `${biome.position.x * 100}%`,
-              top: `${biome.position.y * 100}%`,
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <div className="relative">
-              {biome.link ? (
-                <a
-                  href={biome.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pointer-events-auto block"
-                  data-testid={`biome-link-${biome.name}`}
-                >
-                  <div 
-                    className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
-                    style={{
-                      background: 'rgba(2, 6, 23, 0.85)',
-                      borderColor: `${biome.color}40`,
-                      boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
-                    }}
-                  >
-                    <span 
-                      className="text-sm font-semibold tracking-wide text-white"
-                      style={{
-                        textShadow: `0 0 10px ${biome.color}80`
-                      }}
-                    >
-                      {biome.name}
-                    </span>
-                  </div>
-                </a>
-              ) : (
+        {biomes.map((biome, index) => {
+          const isDragging = dragging?.type === 'biome' && dragging?.index === index;
+          
+          return (
+            <div
+              key={biome.name}
+              className="absolute pointer-events-auto"
+              style={{
+                left: `${biome.position.x * 100}%`,
+                top: `${biome.position.y * 100}%`,
+                transform: 'translate(-50%, -50%)',
+                cursor: isDragging ? 'grabbing' : 'grab',
+                zIndex: isDragging ? 100 : 10
+              }}
+              onMouseDown={(e) => {
+                // Iniciar drag imediatamente
+                const rect = e.currentTarget.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                setDragging({ type: 'biome', index });
+                setDragOffset({
+                  x: e.clientX - centerX,
+                  y: e.clientY - centerY
+                });
+                e.preventDefault();
+              }}
+              onClick={(e) => {
+                // Se não houve drag (dragging null), abre link
+                if (!dragging && biome.link) {
+                  window.open(biome.link, '_blank');
+                }
+                e.preventDefault();
+              }}
+              data-testid={`biome-box-${biome.name}`}
+            >
+              <div className="relative">
                 <div 
-                  className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl"
+                  className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl transition-all duration-200 hover:scale-105 select-none"
                   style={{
-                    background: 'rgba(2, 6, 23, 0.85)',
+                    background: isDragging 
+                      ? 'rgba(2, 6, 23, 0.95)' 
+                      : 'rgba(2, 6, 23, 0.85)',
                     borderColor: `${biome.color}40`,
-                    boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
+                    boxShadow: isDragging
+                      ? `0 0 50px ${biome.color}60, inset 0 0 30px rgba(0, 0, 0, 0.7)`
+                      : `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
                   }}
                 >
                   <span 
@@ -610,36 +613,57 @@ export default function BiomeMapCanvas() {
                     {biome.name}
                   </span>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         
-        {/* Custom Biomes */}
-        {customBiomes.map((biome, index) => (
-          <div
-            key={`custom-${index}`}
-            className="absolute"
-            style={{
-              left: `${biome.position.x * 100}%`,
-              top: `${biome.position.y * 100}%`,
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <div className="relative">
-              <a
-                href={biome.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pointer-events-auto block"
-                data-testid={`custom-biome-link-${index}`}
-              >
+        {/* Custom Biomes - draggable */}
+        {customBiomes.map((biome, index) => {
+          const isDragging = dragging?.type === 'custom' && dragging?.index === index;
+          
+          return (
+            <div
+              key={`custom-${index}`}
+              className="absolute pointer-events-auto"
+              style={{
+                left: `${biome.position.x * 100}%`,
+                top: `${biome.position.y * 100}%`,
+                transform: 'translate(-50%, -50%)',
+                cursor: isDragging ? 'grabbing' : 'grab',
+                zIndex: isDragging ? 100 : 10
+              }}
+              onMouseDown={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                setDragging({ type: 'custom', index });
+                setDragOffset({
+                  x: e.clientX - centerX,
+                  y: e.clientY - centerY
+                });
+                e.preventDefault();
+              }}
+              onClick={(e) => {
+                if (!dragging && biome.link) {
+                  window.open(biome.link, '_blank');
+                }
+                e.preventDefault();
+              }}
+              data-testid={`custom-biome-box-${index}`}
+            >
+              <div className="relative">
                 <div 
-                  className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
+                  className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl transition-all duration-200 hover:scale-105 select-none"
                   style={{
-                    background: 'rgba(2, 6, 23, 0.85)',
+                    background: isDragging 
+                      ? 'rgba(2, 6, 23, 0.95)' 
+                      : 'rgba(2, 6, 23, 0.85)',
                     borderColor: `${biome.color}40`,
-                    boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
+                    boxShadow: isDragging
+                      ? `0 0 50px ${biome.color}60, inset 0 0 30px rgba(0, 0, 0, 0.7)`
+                      : `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
                   }}
                 >
                   <span 
@@ -651,10 +675,10 @@ export default function BiomeMapCanvas() {
                     {biome.name}
                   </span>
                 </div>
-              </a>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {/* Control Panel */}
       <ControlPanel 
