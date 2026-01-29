@@ -169,8 +169,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Link Input */}
                 <div className="mt-3">
                   <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
-                    Link (URL)
                     <InfoTooltip text="URL que será aberta ao clicar rapidamente na caixa do bioma (sem arrastar). Links externos devem começar com https://" />
+                    <span className="ml-2">Link (URL)</span>
                   </label>
                   <input
                     type="text"
@@ -193,8 +193,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Movement Speed */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                    Velocidade: {(currentBiome.movementSpeed * 1000).toFixed(2)}
                     <InfoTooltip text="Controla a rapidez com que as partículas se movem. Valores maiores = movimento mais rápido e dinâmico. Valores menores = movimento mais lento e contemplativo." />
+                    <span className="ml-2">Velocidade: {(currentBiome.movementSpeed * 1000).toFixed(2)}</span>
                   </label>
                   <input
                     type="range"
@@ -211,8 +211,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Chaos */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                    Caos: {(currentBiome.chaos * 100).toFixed(0)}%
                     <InfoTooltip text="Define o nível de aleatoriedade e imprevisibilidade do movimento. 0% = movimento muito ordenado e previsível. 100% = movimento totalmente caótico e imprevisível. Valores altos criam padrões orgânicos." />
+                    <span className="ml-2">Caos: {(currentBiome.chaos * 100).toFixed(0)}%</span>
                   </label>
                   <input
                     type="range"
@@ -229,8 +229,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Weight */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                    Densidade (Weight): {currentBiome.weight.toFixed(2)}
                     <InfoTooltip text="Determina quantas partículas orbitam este bioma. Valores maiores = mais partículas e maior presença visual. Exemplo: 2.5 = 2.5x mais partículas que o padrão. Afeta a distribuição proporcional entre todos os biomas." />
+                    <span className="ml-2">Densidade (Weight): {currentBiome.weight.toFixed(2)}</span>
                   </label>
                   <input
                     type="range"
@@ -247,8 +247,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {/* Region Radius */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                    Raio da Região: {currentBiome.regionRadius.toFixed(2)}
                     <InfoTooltip text="Define o tamanho da área de influência do bioma. Valores maiores = partículas se espalham mais longe do centro. Valores menores = partículas ficam mais concentradas e próximas. Afeta o padrão visual de dispersão." />
+                    <span className="ml-2">Raio da Região: {currentBiome.regionRadius.toFixed(2)}</span>
                   </label>
                   <input
                     type="range"
@@ -266,8 +266,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {currentBiome.attractionForce !== undefined && (
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                      Força de Atração: {currentBiome.attractionForce.toFixed(2)}
                       <InfoTooltip text="Intensidade com que este bioma puxa partículas em sua direção. Valores maiores = atração mais forte e partículas mais concentradas. Use com cuidado: valores muito altos podem criar acúmulo excessivo." />
+                      <span className="ml-2">Força de Atração: {currentBiome.attractionForce.toFixed(2)}</span>
                     </label>
                     <input
                       type="range"
@@ -286,8 +286,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {currentBiome.repelForce !== undefined && (
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                      Força de Repulsão: {currentBiome.repelForce.toFixed(2)}
                       <InfoTooltip text="Intensidade com que este bioma empurra partículas para longe quando ficam muito próximas. Cria efeito de fluxo perene - partículas circulam mas não acumulam. Essencial para biomas como Reconhecimento que devem manter equilíbrio." />
+                      <span className="ml-2">Força de Repulsão: {currentBiome.repelForce.toFixed(2)}</span>
                     </label>
                     <input
                       type="range"
@@ -306,8 +306,8 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                 {currentBiome.egoForce !== undefined && (
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2 flex items-center">
-                      Força do Ego: {currentBiome.egoForce.toFixed(2)}
                       <InfoTooltip text="Força especial do Ser Humano que influencia TODAS as partículas próximas (raio de 40% da tela), independente do bioma de origem. Representa o ego individual que atrai, desvia e causa caos no movimento de todas as partículas. Valores altos criam um centro magnético caótico." />
+                      <span className="ml-2">Força do Ego: {currentBiome.egoForce.toFixed(2)}</span>
                     </label>
                     <input
                       type="range"
