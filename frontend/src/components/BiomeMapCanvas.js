@@ -473,7 +473,7 @@ export default function BiomeMapCanvas() {
       
       {/* Biome Labels - Melhorados (mantido) */}
       <div className="absolute inset-0 pointer-events-none">
-        {BIOMES.map((biome) => (
+        {biomes.map((biome) => (
           <div
             key={biome.name}
             className="absolute"
