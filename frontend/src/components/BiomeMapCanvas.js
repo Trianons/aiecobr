@@ -209,15 +209,33 @@ export default function BiomeMapCanvas() {
             const pulseDx = influences[0].dx;
             const pulseDy = influences[0].dy;
             const pulseDist = influences[0].dist;
-            const pulseForce = 0.0001 * (0.5 + pulseFactor);
-            particle.vx += (-pulseDx / pulseDist) * pulseForce;
-            particle.vy += (-pulseDy / pulseDist) * pulseForce;
             
-            // Reconhecimento: força de repulsão para evitar acúmulo
-            if (primaryBiome.repelForce && pulseDist < 0.06) {
-              // Repele quando muito próximo
-              particle.vx += (pulseDx / pulseDist) * 0.0001 * primaryBiome.repelForce;
-              particle.vy += (pulseDy / pulseDist) * 0.0001 * primaryBiome.repelForce;
+            // Reconhecimento: sistema de fluxo perene - atrai quando longe, repele quando perto
+            if (primaryBiome.flowThrough) {
+              if (pulseDist > 0.1) {
+                // Atração suave quando longe
+                const pulseForce = 0.00006 * (0.5 + pulseFactor);
+                particle.vx += (-pulseDx / pulseDist) * pulseForce;
+                particle.vy += (-pulseDy / pulseDist) * pulseForce;
+              } else if (pulseDist < 0.08) {
+                // Repulsão forte quando muito perto - redistribui partículas
+                const repelStrength = (0.08 - pulseDist) / 0.08;
+                particle.vx += (pulseDx / pulseDist) * 0.0002 * repelStrength * primaryBiome.repelForce;
+                particle.vy += (pulseDy / pulseDist) * 0.0002 * repelStrength * primaryBiome.repelForce;
+                
+                // Empurra para outros biomas aleatoriamente
+                const targetBiome = BIOMES[Math.floor(Math.random() * BIOMES.length)];
+                const redirectDx = targetBiome.position.x - particle.x;
+                const redirectDy = targetBiome.position.y - particle.y;
+                const redirectDist = Math.sqrt(redirectDx * redirectDx + redirectDy * redirectDy);
+                particle.vx += (redirectDx / redirectDist) * 0.00008;
+                particle.vy += (redirectDy / redirectDist) * 0.00008;
+              }
+            } else {
+              // Padrão normal de pulsação
+              const pulseForce = 0.0001 * (0.5 + pulseFactor);
+              particle.vx += (-pulseDx / pulseDist) * pulseForce;
+              particle.vy += (-pulseDy / pulseDist) * pulseForce;
             }
             break;
             
