@@ -491,7 +491,7 @@ export default function BiomeMapCanvas() {
         className="absolute inset-0"
       />
       
-      {/* Biome Labels - Melhorados (mantido) */}
+      {/* Biome Labels - com links */}
       <div className="absolute inset-0 pointer-events-none">
         {biomes.map((biome) => (
           <div
@@ -504,23 +504,92 @@ export default function BiomeMapCanvas() {
             }}
           >
             <div className="relative">
-              <div 
-                className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl"
-                style={{
-                  background: 'rgba(2, 6, 23, 0.85)',
-                  borderColor: `${biome.color}40`,
-                  boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
-                }}
-              >
-                <span 
-                  className="text-sm font-semibold tracking-wide text-white"
+              {biome.link ? (
+                <a
+                  href={biome.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pointer-events-auto block"
+                  data-testid={`biome-link-${biome.name}`}
+                >
+                  <div 
+                    className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
+                    style={{
+                      background: 'rgba(2, 6, 23, 0.85)',
+                      borderColor: `${biome.color}40`,
+                      boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
+                    }}
+                  >
+                    <span 
+                      className="text-sm font-semibold tracking-wide text-white"
+                      style={{
+                        textShadow: `0 0 10px ${biome.color}80`
+                      }}
+                    >
+                      {biome.name}
+                    </span>
+                  </div>
+                </a>
+              ) : (
+                <div 
+                  className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl"
                   style={{
-                    textShadow: `0 0 10px ${biome.color}80`
+                    background: 'rgba(2, 6, 23, 0.85)',
+                    borderColor: `${biome.color}40`,
+                    boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
                   }}
                 >
-                  {biome.name}
-                </span>
-              </div>
+                  <span 
+                    className="text-sm font-semibold tracking-wide text-white"
+                    style={{
+                      textShadow: `0 0 10px ${biome.color}80`
+                    }}
+                  >
+                    {biome.name}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+        
+        {/* Custom Biomes */}
+        {customBiomes.map((biome, index) => (
+          <div
+            key={`custom-${index}`}
+            className="absolute"
+            style={{
+              left: `${biome.position.x * 100}%`,
+              top: `${biome.position.y * 100}%`,
+              transform: 'translate(-50%, -50%)'
+            }}
+          >
+            <div className="relative">
+              <a
+                href={biome.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pointer-events-auto block"
+                data-testid={`custom-biome-link-${index}`}
+              >
+                <div 
+                  className="px-5 py-2.5 rounded-full backdrop-blur-xl border-2 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
+                  style={{
+                    background: 'rgba(2, 6, 23, 0.85)',
+                    borderColor: `${biome.color}40`,
+                    boxShadow: `0 0 30px ${biome.color}30, inset 0 0 20px rgba(0, 0, 0, 0.5)`,
+                  }}
+                >
+                  <span 
+                    className="text-sm font-semibold tracking-wide text-white"
+                    style={{
+                      textShadow: `0 0 10px ${biome.color}80`
+                    }}
+                  >
+                    {biome.name}
+                  </span>
+                </div>
+              </a>
             </div>
           </div>
         ))}
