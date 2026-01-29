@@ -35,7 +35,7 @@ const BIOMES = [
     movementPattern: 'orbital',
     movementSpeed: 0.001,
     chaos: 0.4,
-    weight: 0.6
+    weight: 0.45 // Reduzido de 0.6 para 0.45 (menos 25%)
   },
   { 
     name: 'Reconhecimento', 
