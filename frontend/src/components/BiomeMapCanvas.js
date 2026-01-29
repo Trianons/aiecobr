@@ -82,75 +82,99 @@ export default function BiomeMapCanvas() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false); // Rastrear se houve movimento
   
-  // Estado reativo para os biomas
+  // Estado reativo para os biomas - Configuração otimizada
   const [biomes, setBiomes] = useState([
-    { 
-      name: 'Cultura', 
-      color: '#009B3A',
-      accentColor: '#00C853',
-      position: { x: 0.25, y: 0.75 },
-      regionRadius: 0.25,
-      movementPattern: 'spiral',
-      movementSpeed: 0.0006,
-      chaos: 0.5,
-      weight: 2.5,
-      attractionForce: 1.2, // Força de atração ao invés de repulsão
-      link: 'https://ai.eco.br/'
+    {
+      "name": "Cultura",
+      "color": "#009B3A",
+      "accentColor": "#00C853",
+      "position": {
+        "x": 0.2636125654450262,
+        "y": 0.6746781561461794
+      },
+      "regionRadius": 0.17,
+      "movementPattern": "spiral",
+      "movementSpeed": 0.0016,
+      "chaos": 0.5,
+      "weight": 1.4,
+      "attractionForce": 1.1,
+      "link": "https://ai.eco.br/"
     },
-    { 
-      name: 'Negócios', 
-      color: '#0066CC',
-      accentColor: '#3399FF',
-      position: { x: 0.65, y: 0.5 },
-      regionRadius: 0.15,
-      movementPattern: 'flow',
-      movementSpeed: 0.002,
-      chaos: 0.5,
-      weight: 0.6,
-      attractionForce: 1.2,
-      link: 'https://aibrasil.com.br/'
+    {
+      "name": "Negócios",
+      "color": "#0066CC",
+      "accentColor": "#3399FF",
+      "position": {
+        "x": 0.5060209424083769,
+        "y": 0.3538205980066445
+      },
+      "regionRadius": 0.33,
+      "movementPattern": "flow",
+      "movementSpeed": 0.002,
+      "chaos": 0.5,
+      "weight": 1.1,
+      "attractionForce": 1,
+      "link": "https://aibrasil.com.br/"
     },
-    { 
-      name: 'Colaboração', 
-      color: '#FFDF00',
-      accentColor: '#FFE44D',
-      position: { x: 0.75, y: 0.75 },
-      regionRadius: 0.18,
-      movementPattern: 'orbital',
-      movementSpeed: 0.0011,
-      chaos: 0.35,
-      weight: 0.45,
-      attractionForce: 0.8,
-      link: 'https://ai.eco.br/'
+    {
+      "name": "Colaboração",
+      "color": "#FFDF00",
+      "accentColor": "#FFE44D",
+      "position": {
+        "x": 0.6358638743455497,
+        "y": 0.7643964562569213
+      },
+      "regionRadius": 0.18,
+      "movementPattern": "orbital",
+      "movementSpeed": 0.0011,
+      "chaos": 0.35,
+      "weight": 1.1,
+      "attractionForce": 0.8,
+      "link": "https://ai.eco.br/"
     },
-    { 
-      name: 'Reconhecimento', 
-      color: '#FFFFFF',
-      accentColor: '#E8E8E8',
-      position: { x: 0.5, y: 0.25 },
-      regionRadius: 0.22,
-      movementPattern: 'pulse',
-      movementSpeed: 0.0020,
-      chaos: 0.75,
-      weight: 0.4,
-      repelForce: 1.5,
-      flowThrough: true,
-      link: 'https://aibrasilexperience.com/'
+    {
+      "name": "Reconhecimento",
+      "color": "#FFFFFF",
+      "accentColor": "#E8E8E8",
+      "position": {
+        "x": 0.3931937172774869,
+        "y": 0.18023255813953487
+      },
+      "regionRadius": 0.16,
+      "movementPattern": "spiral",
+      "movementSpeed": 0.002,
+      "chaos": 0.85,
+      "weight": 1.3,
+      "repelForce": 0.6,
+      "flowThrough": true,
+      "link": "https://aibrasilexperience.com/"
     },
-    { 
-      name: 'Ser Humano', 
-      color: '#00A859',
-      accentColor: '#00D966',
-      position: { x: 0.5, y: 0.58 },
-      regionRadius: 0.18,
-      movementPattern: 'wave',
-      movementSpeed: 0.0014,
-      chaos: 0.95,
-      weight: 1.0,
-      egoForce: 2.5,
-      isMutant: true,
-      colorCycle: ['#009B3A', '#0066CC', '#FFDF00', '#FFFFFF', '#00A859', '#ec4899', '#a78bfa', '#22d3ee'],
-      link: '' // Link customizável
+    {
+      "name": "Ser Humano",
+      "color": "#00A859",
+      "accentColor": "#00D966",
+      "position": {
+        "x": 0.3973821989528796,
+        "y": 0.5866382890365448
+      },
+      "regionRadius": 0.18,
+      "movementPattern": "wave",
+      "movementSpeed": 0.0036,
+      "chaos": 1,
+      "weight": 1.5,
+      "egoForce": 2.4,
+      "isMutant": true,
+      "colorCycle": [
+        "#009B3A",
+        "#0066CC",
+        "#FFDF00",
+        "#FFFFFF",
+        "#00A859",
+        "#ec4899",
+        "#a78bfa",
+        "#22d3ee"
+      ],
+      "link": ""
     }
   ]);
   
