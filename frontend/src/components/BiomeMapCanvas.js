@@ -86,7 +86,7 @@ export default function BiomeMapCanvas() {
   // Configuração padrão (para fallback)
   const defaultBiomes = [
     {
-      "name": "Cultura",
+      "name": "Ecossistema de IA",
       "color": "#009B3A",
       "accentColor": "#00C853",
       "position": { "x": 0.2636125654450262, "y": 0.6746781561461794 },
@@ -125,7 +125,7 @@ export default function BiomeMapCanvas() {
       "link": "https://ai.eco.br/"
     },
     {
-      "name": "Reconhecimento",
+      "name": "AI Brasil Experience",
       "color": "#FFFFFF",
       "accentColor": "#E8E8E8",
       "position": { "x": 0.3931937172774869, "y": 0.18023255813953487 },
@@ -158,7 +158,7 @@ export default function BiomeMapCanvas() {
   // Estado reativo para os biomas - Configuração otimizada
   const [biomes, setBiomes] = useState([
     {
-      "name": "Cultura",
+      "name": "Ecossistema de IA",
       "color": "#009B3A",
       "accentColor": "#00C853",
       "position": {
@@ -206,7 +206,7 @@ export default function BiomeMapCanvas() {
       "link": "https://ai.eco.br/"
     },
     {
-      "name": "Reconhecimento",
+      "name": "AI Brasil Experience",
       "color": "#FFFFFF",
       "accentColor": "#E8E8E8",
       "position": {

@@ -159,35 +159,55 @@ export default function ControlPanel({ biomes, onUpdate, customBiomes, onAddCust
                   border: `2px solid ${currentBiome.color}40`
                 }}
               >
-                <h3 className="text-lg font-bold text-white mb-2">
-                  {currentBiome.name}
+                <h3 className="text-lg font-bold text-white mb-3">
+                  Editor de Bioma
                 </h3>
-                <div className="text-xs text-white/60 mb-2">
-                  Padrão: {currentBiome.movementPattern}
+                
+                {/* Nome do Bioma - Editável */}
+                <div className="mb-3">
+                  <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
+                    <InfoTooltip text="Nome que aparece na caixa flutuante do bioma. Você pode mudar para qualquer texto." />
+                    <span className="ml-2">Nome do Bioma</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={currentBiome.name}
+                    onChange={(e) => handleTextChange(currentBiome.name, 'name', e.target.value)}
+                    placeholder="Nome do bioma"
+                    className="w-full px-3 py-2 text-sm font-semibold rounded backdrop-blur-md border"
+                    style={{
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white'
+                    }}
+                    data-testid={`${currentBiome.name}-name-input`}
+                  />
                 </div>
                 
-                {/* Link Input - Apenas para Cultura e Ser Humano */}
-                {(currentBiome.name === 'Cultura' || currentBiome.name === 'Ser Humano') && (
-                  <div className="mt-3">
-                    <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
-                      <InfoTooltip text="URL que será aberta ao clicar rapidamente na caixa do bioma (sem arrastar). Links externos devem começar com https://" />
-                      <span className="ml-2">Link (URL)</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={currentBiome.link || ''}
-                      onChange={(e) => handleTextChange(currentBiome.name, 'link', e.target.value)}
-                      placeholder="https://exemplo.com"
-                      className="w-full px-3 py-1.5 text-xs rounded backdrop-blur-md border"
-                      style={{
-                        background: 'rgba(15, 23, 42, 0.8)',
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
-                        color: 'white'
-                      }}
-                      data-testid={`${currentBiome.name}-link-input`}
-                    />
-                  </div>
-                )}
+                <div className="text-xs text-white/60 mb-3">
+                  Padrão de movimento: {currentBiome.movementPattern}
+                </div>
+                
+                {/* Link Input - Para todos os biomas */}
+                <div className="mt-3">
+                  <label className="block text-xs font-medium text-white/70 mb-1 flex items-center">
+                    <InfoTooltip text="URL que será aberta ao clicar rapidamente na caixa do bioma (sem arrastar). Links externos devem começar com https://" />
+                    <span className="ml-2">Link (URL)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={currentBiome.link || ''}
+                    onChange={(e) => handleTextChange(currentBiome.name, 'link', e.target.value)}
+                    placeholder="https://exemplo.com"
+                    className="w-full px-3 py-1.5 text-xs rounded backdrop-blur-md border"
+                    style={{
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white'
+                    }}
+                    data-testid={`${currentBiome.name}-link-input`}
+                  />
+                </div>
               </div>
 
               {/* Controls - Ordenados por impacto visual */}
